@@ -80,7 +80,7 @@ def pair_msas(ox1, ox2, msa1, msa2):
     #Return a concatenated MSA
     return np.concatenate([msa1, msa2], axis=1)
 
-def analyse_paired_msa(paired_msa):
+def analyse_paired_msa(paired_msa, seqid=0.62):
     """Analyse the paired MSA to see if it is likely
     to obtain an accurate prediction.
     1. Neff - 62% seqid
@@ -90,7 +90,7 @@ def analyse_paired_msa(paired_msa):
     #Neff. Cluster values on 62% seqid
     Neff=0
     remaining_msa = copy.deepcopy(paired_msa)
-    t = paired_msa.shape[1]*0.62 #Threshold
+    t = paired_msa.shape[1]*seqid #Threshold
     while remaining_msa.shape[0]>0:
         msa_diff = np.count_nonzero(remaining_msa-remaining_msa[0],axis=1)
         #Select
