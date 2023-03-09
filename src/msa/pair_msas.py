@@ -2,7 +2,6 @@ import sys
 import os
 import numpy as np
 import time
-import matplotlib.pyplot as plt
 import copy
 import pdb
 
@@ -116,20 +115,3 @@ def write_a3m(merged_msa, outfile):
             file.write(''.join([backmap[ch] for ch in merged_msa[i]])+'\n')
 
     return None
-
-
-#Read MSAS
-msa1='../../data/dev/4G4S_O.a3m'
-msa2='../../data/dev/4G4S_P.a3m'
-msa1, ox1 = read_a3m(msa1)
-msa2, ox2 = read_a3m(msa2)
-#Get the unique ox seqs from the MSAs
-u_ox1, inds1 = np.unique(ox1, return_index=True)
-u_msa1 = msa1[inds1]
-u_ox2, inds2 = np.unique(ox2, return_index=True)
-u_msa2 = msa2[inds2]
-#Pair MSAs
-paired_msa = pair_msas(u_ox1, u_ox2, u_msa1, u_msa2)
-#Analyse
-Neff, gap_fraction = analyse_paired_msa(paired_msa)
-pdb.set_trace()
