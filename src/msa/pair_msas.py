@@ -2,6 +2,8 @@ import sys
 import os
 import numpy as np
 import time
+import matplotlib.pyplot as plt
+import copy
 import pdb
 
 def read_a3m(infile,max_gap_fraction=0.9):
@@ -78,12 +80,43 @@ def pair_msas(ox1, ox2, msa1, msa2):
     #Return a concatenated MSA
     return np.concatenate([msa1, msa2], axis=1)
 
-def analyse_paired_msa():
+def analyse_paired_msa(paired_msa):
     """Analyse the paired MSA to see if it is likely
     to obtain an accurate prediction.
-    1. Neff
+    1. Neff - 62% seqid
     2. Gaps
     """
+
+    #Neff. Cluster values on 62% seqid
+    Neff=0
+    remaining_msa = copy.deepcopy(paired_msa)
+    t = paired_msa.shape[1]*0.62 #Threshold
+    while remaining_msa.shape[0]>0:
+        msa_diff = np.count_nonzero(remaining_msa-remaining_msa[0],axis=1)
+        #Select
+        remaining_msa = remaining_msa[np.argwhere(msa_diff>t)[:,0]]
+        Neff+=1
+        #print(remaining_msa.shape, Neff)
+
+    #Gaps
+    gap_fraction = np.argwhere(paired_msa==21).shape[0]/(paired_msa.shape[0]*paired_msa.shape[1])
+
+    return Neff, gap_fraction
+
+
+def write_a3m(merged_msa, outfile):
+    '''Write a3m MSA'''
+    backmap = { 1:'A', 2:'C', 3:'D', 4:'E', 5:'F',6:'G' ,7:'H',
+               8:'I', 9:'K', 10:'L', 11:'M', 12:'N', 13:'P',14:'Q',
+               15:'R', 16:'S', 17:'T', 18:'V', 19:'W', 20:'Y', 21:'-'} #Here all unusual AAs and gaps are set to the same char (same in the GaussDCA script)
+
+    with open(outfile,'w') as file:
+        for i in range(len(merged_msa)):
+            file.write('>'+str(i)+'\n')
+            file.write(''.join([backmap[ch] for ch in merged_msa[i]])+'\n')
+
+    return None
+
 
 #Read MSAS
 msa1='../../data/dev/4G4S_O.a3m'
@@ -97,3 +130,6 @@ u_ox2, inds2 = np.unique(ox2, return_index=True)
 u_msa2 = msa2[inds2]
 #Pair MSAs
 paired_msa = pair_msas(u_ox1, u_ox2, u_msa1, u_msa2)
+#Analyse
+Neff, gap_fraction = analyse_paired_msa(paired_msa)
+pdb.set_trace()
