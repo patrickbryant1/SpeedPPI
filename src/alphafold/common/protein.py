@@ -151,6 +151,7 @@ def to_pdb(prot: Protein) -> str:
   pdb_lines.append('MODEL     1')
   atom_index = 1
   chain_id = 'A'
+  CB_coords = []
   # Add all atom sites.
   for i in range(aatype.shape[0]):
     res_name_3 = res_1to3(aatype[i])
@@ -159,6 +160,8 @@ def to_pdb(prot: Protein) -> str:
       if mask < 0.5:
         continue
 
+      if atom_name == 'CB' or (atom_name=='CA' and res_name_3=='GLY'):
+          CB_coords.append(pos)
       record_type = 'ATOM'
       name = atom_name if len(atom_name) == 4 else f' {atom_name}'
       alt_loc = ''
@@ -186,7 +189,7 @@ def to_pdb(prot: Protein) -> str:
 
   pdb_lines.append('END')
   pdb_lines.append('')
-  return '\n'.join(pdb_lines)
+  return '\n'.join(pdb_lines), np.array(CB_coords)
 
 
 def ideal_atom_mask(prot: Protein) -> np.ndarray:

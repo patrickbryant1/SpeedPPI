@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Full AlphaFold protein structure prediction script."""
+"""Full AlphaFold protein structure prediction script.
+This has been modified to do all-vs-all predictions for PPI network creation.
+"""
 import json
 import os
 import warnings
@@ -36,6 +38,7 @@ from alphafold.model import data
 from alphafold.model import config
 from alphafold.model import model
 import pandas as pd
+import pdb
 import numpy as np
 # Internal import (7716).
 
@@ -72,6 +75,7 @@ FLAGS = flags.FLAGS
 def predict_structure(
     fasta_path: str,
     fasta_name: str,
+    chain_break: int,
     output_dir_base: str,
     data_pipeline: pipeline.DataPipeline,
     random_seed: int,
@@ -95,12 +99,9 @@ def predict_structure(
         msa_output_dir=msa_output_dir)
   timings['features'] = time.time() - t_0
 
-  # Introduce chain breaks for oligomers ########## NEW!
+  # Introduce chain breaks for oligomers
   idx_res = feature_dict['residue_index']
-  prev_overlay = 0
-  for chain_break in FLAGS.chain_break_list:
-    idx_res[chain_break:] += 200
-
+  idx_res[chain_break:] += 200
   feature_dict['residue_index'] = idx_res
 
   relaxed_pdbs = {}
@@ -130,11 +131,12 @@ def predict_structure(
         b_factors=plddt_b_factors)
 
     unrelaxed_pdb_path = os.path.join(output_dir, f'unrelaxed_{model_name}.pdb')
-    with open(unrelaxed_pdb_path, 'w') as f:
-      f.write(protein.to_pdb(unrelaxed_protein))
 
-    #Score
-    
+    pdb_info, CB_coords = protein.to_pdb(unrelaxed_protein)
+
+    #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
+    #Cβs within 8 Å from each other from different chains are used to define the interface.
+    pdb.set_trace()
 
 
 def main(num_ensemble,
@@ -167,14 +169,28 @@ def main(num_ensemble,
   #Get a seed
   random_seed = random.randrange(sys.maxsize)
 
-  #Go through all
-  #Merge fasta and get length of the first chain
+  #Get length of the first chain
+  target_row = protein_csv.loc[target_row]
+  target_id = target_row.id
+  target_seq = target_row.sequence
+  #Get the remaining rows - only use the subsequent rows (upper-triangular)
+  remaining_rows = np.arange(len(protein_csv))[target_row:]
+  #Check the previous preds
+  if os.path.exists(output_dir+target_id+'.csv'):
+      metric_df = pd.read_csv(output_dir+target_id+'.csv')
+      metrics = {'ID1': metric_df.ID1.values, 'ID2':metric_df.ID2.values,
+                'num_contacts':metric_df.num_contacts.values, 'avg_if_plddt':metric_df.avg_if_plddt.values}
+  else:
+      metrics = {'ID1':[], 'ID2':[], 'num_contacts':[], 'avg_if_plddt':[]}
 
-  # Predict structure for each of the sequences.
-  for fasta_path, fasta_name in zip(FLAGS.fasta_paths, fasta_names):
-    predict_structure(
+  #Merge fasta and predict the structure for each of the sequences.
+  for i in remaining_rows[len(metrics):]:
+    pdb.set_trace()
+    row_i = protein_csv.loc[i]
+    num_contacts, avg_if_plddt = predict_structure(
         fasta_path=fasta_path,
         fasta_name=fasta_name,
+        chain_break=len(target_seq),
         output_dir_base=FLAGS.output_dir,
         data_pipeline=data_pipeline,
         model_runners=model_runners,
@@ -185,3 +201,11 @@ def main(num_ensemble,
 
 
 ################MAIN################
+main(num_ensemble=1,
+    max_recycles=FLAGS.max_recycles,
+    data_dir=FLAGS.data_dir,
+    fasta_dir=FLAGS.fasta_dir,
+    msa_dir=FLAGS.msa_dir,
+    output_dir=FLAGS.output_dir,
+    protein_csv=pd.read_csv(FLAGS.protein_csv),
+    target_row=FLAGS.target_row)
