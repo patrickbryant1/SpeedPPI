@@ -1,15 +1,17 @@
 #Create a PPI network
 
-#Path to settings
+#ARGS
+#INPUT
 FASTA_SEQS=$1 #All fasta seqs
 HHBLITS=$2
 OUTDIR=$3 #Path to HHblits
-
+#DEFAULT
 UNICLUST=./data/uniclust30/uniclust30_2018_08 #Assume path according to setup
 
 
 #The pipeline starts here
-#Create individual fastas
+
+#1. Create individual fastas
 FASTADIR=$OUTDIR/fasta/
 if [ -f "$FASTADIR/id_seqs.csv" ]; then
   echo Fastas exist...
@@ -22,7 +24,7 @@ echo "Writing fastas of each sequence to $FASTADIR"
 fi
 wait
 
-#Run HHblits for all MSAs
+#2. Run HHblits for all fastas to create MSAs
 MSADIR=$OUTDIR/msas/
 if [ -d "$MSADIR" ]; then
   echo MSAS exists...
@@ -41,3 +43,6 @@ do
   fi
 done
 fi
+
+
+#3. Predict the structure using a modified version of AlphaFold2 (FoldDock)
