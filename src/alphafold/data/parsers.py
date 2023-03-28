@@ -139,7 +139,8 @@ def parse_a3m(a3m_string: str) -> Tuple[Sequence[str], DeletionMatrix]:
         at `deletion_matrix[i][j]` is the number of residues deleted from
         the aligned sequence i at residue position j.
   """
-  sequences, _ = parse_fasta(a3m_string)
+  #sequences, _ = parse_fasta(a3m_string)
+  sequences = a3m_string #Input list with seqs
   deletion_matrix = []
   for msa_sequence in sequences:
     deletion_vec = []

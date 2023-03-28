@@ -45,7 +45,7 @@ def read_a3m(infile,max_gap_fraction=0.9):
             line = line.rstrip()
             gap_fraction = line.count('-') / float(len(line))
             if gap_fraction <= max_gap_fraction:#Only use the lines with less than 90 % gaps
-                parsed.append([mapping.get(ch, 22) for ch in line if not ch.islower()])
+                parsed.append(''.join([ch for ch in line if not ch.islower()]))
             else:
                 if len(species)>1:
                     species = species[:-1] #Remove the previously stored species
@@ -58,8 +58,7 @@ def read_a3m(infile,max_gap_fraction=0.9):
             seqlen = len(parsed[-1])
             lc+=1
 
-
-    return np.array(parsed, dtype=np.int8, order='F'), np.array(species)
+    return np.array(parsed), np.array(species)
 
 def pair_msas(ox1, ox2, msa1, msa2):
     '''Select the top ox match (first match) in each MSA and
@@ -74,10 +73,11 @@ def pair_msas(ox1, ox2, msa1, msa2):
     ox1, msa1 = ox1[match_inds1], msa1[match_inds1]
     #MSA2
     match_inds2 = np.argwhere(np.isin(ox2, matching_ox)).ravel()
-    ox2, msa2 = msa2[match_inds2], msa2[match_inds2]
+    ox2, msa2 = ox2[match_inds2], msa2[match_inds2]
 
     #Return a concatenated MSA
-    return np.concatenate([msa1, msa2], axis=1)
+    cat_msa = [msa1[i]+msa2[i] for i in range(len(msa1))]
+    return cat_msa
 
 def analyse_paired_msa(paired_msa, seqid=0.62):
     """Analyse the paired MSA to see if it is likely

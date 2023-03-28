@@ -32,6 +32,7 @@ from alphafold.data import msaonly
 from alphafold.data import foldonly
 from alphafold.data import pipeline
 from alphafold.data import templates
+from alphafold.data import pair_msas
 from alphafold.model import data
 from alphafold.model import config
 from alphafold.model import model
@@ -62,15 +63,20 @@ parser.add_argument('--output_dir', nargs=1, type= str, default=sys.stdin, help 
 ##########INPUT DATA#########
 class Dataset:
 
-    def __init__(self, dataset, indices):
+    def __init__(self, dataset, target_seq, target_id, indices, msa_dir):
         #Data
         self.data = dataset
+        #First seq
+        self.target_seq = target_seq
+        self.target_id = target_id
         #Indices
         if len(indices)<5:
             indices = np.repeat(indices, 5)
         self.indices = indices
         #Size
         self.size = len(indices)
+        #MSA dir
+        self.msa_dir = msa_dir
 
     def __len__(self):
         return self.size
@@ -79,14 +85,28 @@ class Dataset:
 
         #Here the dataloading takes place
         index = self.indices[index] #This allows for loading more ex than indices
+        row = self.data.loc[index]
+        id_i, seq_i = row.ID, row.sequence
         # Get features. The features are prefetched on CPU.
+        #Pair and block MSAs
+        msa1, ox1 = pair_msas.read_a3m(self.msa_dir+self.target_id+'.a3m')
+        msa2, ox2 = pair_msas.read_a3m(self.msa_dir+id_i+'.a3m')
+        #Get the unique ox seqs from the MSAs
+        u_ox1, inds1 = np.unique(ox1, return_index=True)
+        u_msa1 = msa1[inds1]
+        u_ox2, inds2 = np.unique(ox2, return_index=True)
+        u_msa2 = msa2[inds2]
+        #This is a list with seqs
+        paired_msa = pair_msas.pair_msas(u_ox1, u_ox2, u_msa1, u_msa2)
+        pdb.set_trace()
         # The msas must be str representations of the blocked+paired MSAs here
         #Define the data pipeline
         data_pipeline = foldonly.FoldDataPipeline()
-        
+
         #Get features
         feature_dict = data_pipeline.process(
-              input_fasta_path=fasta_path,
+              input_sequence=self.target_seq+seq_i,
+              input_description=self.target_id+'_'+id_i,
               input_msas=msas,
               template_search=None)
 
@@ -94,7 +114,8 @@ class Dataset:
         idx_res = feature_dict['residue_index']
         idx_res[chain_break:] += 200
         feature_dict['residue_index'] = idx_res #This assignment is unnecessary (already made?)
-
+        # Add the id
+        feature_dict['ID'] = self.target_id+'_'+id_i
         return feature_dict
 
 
@@ -147,7 +168,7 @@ def main(num_ensemble,
       metrics = {'ID1':[], 'ID2':[], 'num_contacts':[], 'avg_if_plddt':[]}
 
   #Data loader
-  pred_ds = Dataset(protein_csv, remaining_rows)
+  pred_ds = Dataset(protein_csv, target_seq, target_id, remaining_rows, msa_dir)
   pred_data_gen = DataLoader(pred_ds, batch_size=1, num_workers=num_cpus)
 
   #Merge fasta and predict the structure for each of the sequences.
@@ -155,6 +176,7 @@ def main(num_ensemble,
     pdb.set_trace()
     # Load an input example - on CPU
     feature_dict = next(pred_data_gen)
+    #Check if this is already predicted
     pdb.set_trace()
     # Run the model - on GPU
     for model_name, model_runner in model_runners.items():

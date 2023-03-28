@@ -94,17 +94,12 @@ class FoldDataPipeline:
     if template_featurizer:
       self.template_featurizer = template_featurizer
 
-  def process(self, input_fasta_path: str, input_msas: list,
+  def process(self, input_sequence: str,
+             input_description: str,
+             input_msas: list,
              template_search: Optional[str]) -> FeatureDict:
     """Runs alignment tools on the input sequence and creates features."""
-    with open(input_fasta_path) as f:
-      input_fasta_str = f.read()
-    input_seqs, input_desc = parsers.parse_fasta(input_fasta_str)
-    if len(input_seqs) != 1:
-      raise ValueError(
-          f'More than one input sequence found in {input_fasta_path}.')
-    input_sequence = input_seqs[0]
-    input_description = input_desc[0]
+
     num_res = len(input_sequence)
 
     parsed_msas = []
