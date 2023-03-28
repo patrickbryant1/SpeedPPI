@@ -71,6 +71,45 @@ flags.DEFINE_integer('max_recycles', 10,
 
 FLAGS = flags.FLAGS
 
+#######################FUNCTIONS#######################
+
+##########INPUT DATA#########
+class Dataset:
+
+    def __init__(self, indices, data_pipeline):
+        self.data = dataset
+
+        #Get the total dataset length
+        self.indices = indices
+
+    def __len__(self):
+        return self.size
+
+    def __getitem__(self, index):
+
+        #Here the dataloading takes place
+        index = self.indices[index] #This allows for loading more ex than indices
+        # Get features. The features are prefetched on CPU.
+        # The msas must be str representations of the blocked+paired MSAs here
+        #Define the data pipeline
+        data_pipeline = foldonly.FoldDataPipeline()
+        #Get features
+        feature_dict = data_pipeline.process(
+              input_fasta_path=fasta_path,
+              input_msas=msas,
+              template_search=None)
+
+        # Introduce chain breaks for oligomers
+        idx_res = feature_dict['residue_index']
+        idx_res[chain_break:] += 200
+        feature_dict['residue_index'] = idx_res #This assignment is unnecessary (already made?)
+
+        return feature_dict
+
+
+
+
+
 #############Run PPI evaluation#############
 def main(num_ensemble,
         max_recycles,
@@ -79,7 +118,8 @@ def main(num_ensemble,
         msa_dir,
         output_dir,
         protein_csv,
-        target_row):
+        target_row,
+        num_cpus):
 
   """Predict the structure of all possible interacting pairs to the protein in the target row.
   """
@@ -116,23 +156,16 @@ def main(num_ensemble,
   else:
       metrics = {'ID1':[], 'ID2':[], 'num_contacts':[], 'avg_if_plddt':[]}
 
+  #Data loader
+  pred_ds = Dataset(remaining_rows)
+  pred_data_gen = DataLoader(pred_ds, batch_size=1, num_workers=num_cpus)
+
   #Merge fasta and predict the structure for each of the sequences.
   for i in remaining_rows[len(metrics):]:
     pdb.set_trace()
-    row_i = protein_csv.loc[i]
-
-    # Get features. The features are prefetched on CPU.
-    # The msas must be str representations of the blocked+paired MSAs here
-    feature_dict = data_pipeline.process(
-          input_fasta_path=fasta_path,
-          input_msas=msas,
-          template_search=None)
-
-    # Introduce chain breaks for oligomers
-    idx_res = feature_dict['residue_index']
-    idx_res[chain_break:] += 200
-    feature_dict['residue_index'] = idx_res #This assignment is unnecessary (already made?)
-
+    # Load an input example - on CPU
+    feature_dict = next(pred_data_gen)
+    pdb.set_trace()
     # Run the model - on GPU
     for model_name, model_runner in model_runners.items():
       processed_feature_dict = model_runner.process_features(
@@ -172,4 +205,5 @@ main(num_ensemble=1,
     msa_dir=FLAGS.msa_dir,
     output_dir=FLAGS.output_dir,
     protein_csv=pd.read_csv(FLAGS.protein_csv),
-    target_row=FLAGS.target_row)
+    target_row=FLAGS.target_row,
+    num_cpus=FLAFS.num_cpus)
