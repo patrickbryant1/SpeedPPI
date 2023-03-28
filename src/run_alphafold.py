@@ -105,7 +105,7 @@ class Dataset:
             blocked_msa.append(seq+gaps1)
         gaps2 = '-'*len(msa1[0])
         for seq in msa2:
-            blocked_msa.append(gaps1+seq)
+            blocked_msa.append(gaps2+seq)
 
         # The msas must be str representations of the blocked+paired MSAs here
         #Define the data pipeline
@@ -120,10 +120,10 @@ class Dataset:
 
         # Introduce chain breaks for oligomers
         idx_res = feature_dict['residue_index']
-        idx_res[chain_break:] += 200
+        idx_res[len(self.target_seq):] += 200
         feature_dict['residue_index'] = idx_res #This assignment is unnecessary (already made?)
         # Add the id
-        feature_dict['ID'] = self.target_id+'_'+id_i
+        feature_dict['ID'] = self.target_id+'-'+id_i
         return feature_dict
 
 
@@ -170,10 +170,10 @@ def main(num_ensemble,
   #Check the previous preds
   if os.path.exists(output_dir+target_id+'.csv'):
       metric_df = pd.read_csv(output_dir+target_id+'.csv')
-      metrics = {'ID1': metric_df.ID1.values, 'ID2':metric_df.ID2.values,
+      metrics = {'ID': metric_df.ID.values,
                 'num_contacts':metric_df.num_contacts.values, 'avg_if_plddt':metric_df.avg_if_plddt.values}
   else:
-      metrics = {'ID1':[], 'ID2':[], 'num_contacts':[], 'avg_if_plddt':[]}
+      metrics = {'ID':[], 'num_contacts':[], 'avg_if_plddt':[]}
 
   #Data loader
   pred_ds = Dataset(protein_csv, target_seq, target_id, remaining_rows, msa_dir)
@@ -186,9 +186,11 @@ def main(num_ensemble,
   #Merge fasta and predict the structure for each of the sequences.
   for i in remaining_rows:
     # Load an input example - on CPU
-    feature_dict = next(pred_data_gen)
+    batch = next(pred_data_gen)
+    feature_dict = batch[0]
     #Check if this is already predicted
-    pdb.set_trace()
+    if feature_dict['ID'] in metrics['ID']:
+      continue
     # Run the model - on GPU
     for model_name, model_runner in model_runners.items():
       processed_feature_dict = model_runner.process_features(
@@ -196,7 +198,8 @@ def main(num_ensemble,
       prediction_result = model_runner.predict(processed_feature_dict)
 
     #Calculate the if contacts and if plDDT
-
+    pdb.set_trace()
+    
     # Get pLDDT confidence metric.
     plddt = prediction_result['plddt']
 
