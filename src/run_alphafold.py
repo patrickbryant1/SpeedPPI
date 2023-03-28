@@ -98,7 +98,15 @@ class Dataset:
         u_msa2 = msa2[inds2]
         #This is a list with seqs
         paired_msa = pair_msas.pair_msas(u_ox1, u_ox2, u_msa1, u_msa2)
-        pdb.set_trace()
+        #Block the MSA
+        blocked_msa = []
+        gaps1 = '-'*len(msa2[0])
+        for seq in msa1:
+            blocked_msa.append(seq+gaps1)
+        gaps2 = '-'*len(msa1[0])
+        for seq in msa2:
+            blocked_msa.append(gaps1+seq)
+
         # The msas must be str representations of the blocked+paired MSAs here
         #Define the data pipeline
         data_pipeline = foldonly.FoldDataPipeline()
@@ -107,7 +115,7 @@ class Dataset:
         feature_dict = data_pipeline.process(
               input_sequence=self.target_seq+seq_i,
               input_description=self.target_id+'_'+id_i,
-              input_msas=msas,
+              input_msas=[paired_msa,blocked_msa],
               template_search=None)
 
         # Introduce chain breaks for oligomers
@@ -172,8 +180,7 @@ def main(num_ensemble,
   pred_data_gen = DataLoader(pred_ds, batch_size=1, num_workers=num_cpus)
 
   #Merge fasta and predict the structure for each of the sequences.
-  for i in remaining_rows[len(metrics):]:
-    pdb.set_trace()
+  for i in remaining_rows:
     # Load an input example - on CPU
     feature_dict = next(pred_data_gen)
     #Check if this is already predicted

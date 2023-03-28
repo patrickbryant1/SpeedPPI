@@ -138,6 +138,9 @@ def parse_a3m(a3m_string: str) -> Tuple[Sequence[str], DeletionMatrix]:
       * The deletion matrix for the alignment as a list of lists. The element
         at `deletion_matrix[i][j]` is the number of residues deleted from
         the aligned sequence i at residue position j.
+
+      In FoldDock, no deletions are used. These are removed when the MSAs are merged.
+      Maybe deletions are bad?
   """
   #sequences, _ = parse_fasta(a3m_string)
   sequences = a3m_string #Input list with seqs
