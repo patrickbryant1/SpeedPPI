@@ -11,7 +11,7 @@
 #Load the necessary modules (e.g. python)
 
 #This checks if an offset is provided - useful if more than
-#the max amount of jobs is used
+#the max amount of allowed jobs is used
 if [ -z $1 ]
 then
         offset=0
@@ -27,4 +27,4 @@ echo $ID
 FASTADIR="path to fasta seqs"
 FASTA=$FASTADIR/$ID'.fasta'
 
-#
+#Annotate the domains

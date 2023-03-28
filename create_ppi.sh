@@ -51,3 +51,10 @@ do
 done
 
 #4. Predict the structure using a modified version of AlphaFold2 (FoldDock)
+PR_CSV=$FASTADIR/id_seqs.csv
+NUM_PREDS=$(wc -l $PR_CSV|cut -d ' ' -f 1)
+NUM_PREDS=$(($NUM_PREDS-1))
+for (( c=1; c<=$NUM_PREDS; c++ ))
+do
+    echo "$c"
+done
