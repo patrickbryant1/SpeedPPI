@@ -273,7 +273,7 @@ def main(num_ensemble,
     #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
     pdockq, avg_if_plddt, n_if_contacts = score_PPI(CB_dists, plddt, l1)
     #Save if pDockQ>t
-    if pDockQ>t:
+    if pdockq>t:
       output_name = output_dir+feature_dict['ID']+'.pdb'
       save_design(unrelaxed_protein, output_name, l1)
       pdb.set_trace()
