@@ -128,7 +128,7 @@ class Dataset:
 
 
 #############Run PPI evaluation#############
-def score_PPI(CB_dists, plddt, l1):
+def score_PPI(CB_coords, plddt, l1):
     """Score the PPI
     """
 
@@ -271,12 +271,11 @@ def main(num_ensemble,
     #Get the pdb and CB coords
     pdb_info, CB_coords = protein.to_pdb(unrelaxed_protein)
     #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
-    pdockq, avg_if_plddt, n_if_contacts = score_PPI(CB_dists, plddt, l1)
+    pdockq, avg_if_plddt, n_if_contacts = score_PPI(CB_coords, plddt, l1)
     #Save if pDockQ>t
-    if pDockQ>t:
-      output_name = output_dir+feature_dict['ID']+'.pdb'
-      save_design(unrelaxed_protein, output_name, l1)
-      pdb.set_trace()
+    output_name = output_dir+feature_dict['ID']+'.pdb'
+    save_design(unrelaxed_protein, output_name, l1)
+    pdb.set_trace()
 
 
 
