@@ -41,7 +41,7 @@ import numpy as np
 #Data loading
 from tinyloader import DataLoader
 # Internal import (7716).
-
+from collections import defaultdict
 import pdb
 
 
@@ -185,7 +185,6 @@ def save_design(pdb_info, output_name, l1):
 
     chain_name = 'A'
     with open(output_name, 'w') as f:
-        pdb.set_trace()
         pdb_contents = pdb_info.split('\n')
         for line in pdb_contents:
             try:
@@ -280,9 +279,7 @@ def main(num_ensemble,
     #Save if pDockQ>t
     output_name = output_dir+feature_dict['ID']+'.pdb'
     save_design(pdb_info, output_name, l1)
-    pdb.set_trace()
-
-
+    print(pdockq)
 
 
 ################MAIN################
