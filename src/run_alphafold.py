@@ -38,9 +38,12 @@ from alphafold.model import data
 from alphafold.model import config
 from alphafold.model import model
 import pandas as pd
-import pdb
 import numpy as np
+#Data loading
+from tinyloader import DataLoader
 # Internal import (7716).
+
+import pdb
 
 ##### essential flags #####
 flags.DEFINE_string('protein_csv', None,
@@ -56,18 +59,18 @@ flags.DEFINE_list('fasta_dir', None,
     'basename is used to name the output directories for '
     'each prediction.')
 
-flags.DEFINE_string('output_dir', None,
-    'Path to a directory that will store the results.')
 
 flags.DEFINE_list('msa_dir', None,
     'Comma separated list of msa paths')
 
-##### databases flags #####
 flags.DEFINE_string('data_dir', None,
     'Path to directory of supporting data (params).')
 
 flags.DEFINE_integer('max_recycles', 10,
     'Number of recyles through the model')
+
+flags.DEFINE_string('output_dir', None,
+    'Path to a directory that will store the results.')
 
 FLAGS = flags.FLAGS
 
@@ -80,6 +83,9 @@ class Dataset:
         self.data = dataset
 
         #Get the total dataset length
+        #This is necessary due to prefetching
+        if len(indices)<5:
+            indices = np.repeat(indices, 5)
         self.indices = indices
 
     def __len__(self):
@@ -148,6 +154,7 @@ def main(num_ensemble,
   chain_break=len(target_seq)
   #Get the remaining rows - only use the subsequent rows (upper-triangular)
   remaining_rows = np.arange(len(protein_csv))[target_row:]
+
   #Check the previous preds
   if os.path.exists(output_dir+target_id+'.csv'):
       metric_df = pd.read_csv(output_dir+target_id+'.csv')
