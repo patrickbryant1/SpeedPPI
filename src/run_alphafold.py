@@ -71,74 +71,7 @@ flags.DEFINE_integer('max_recycles', 10,
 
 FLAGS = flags.FLAGS
 
-
-def predict_structure(
-    fasta_path: str,
-    fasta_name: str,
-    chain_break: int,
-    output_dir_base: str,
-    data_pipeline: pipeline.DataPipeline,
-    random_seed: int,
-    model_runners: Optional[Dict[str, model.RunModel]]
-    ):
-
-  """Predicts structure using AlphaFold for the given sequence."""
-  timings = {}
-  output_dir = os.path.join(output_dir_base, fasta_name)
-  if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-  msa_output_dir = os.path.join(output_dir, 'msas')
-  if not os.path.exists(msa_output_dir):
-    os.makedirs(msa_output_dir)
-
-  # Get features.
-  feature_dict = data_pipeline.process(
-        input_fasta_path=fasta_path,
-        input_msas=FLAGS.msas,
-        template_search=FLAGS.template_search,
-        msa_output_dir=msa_output_dir)
-  timings['features'] = time.time() - t_0
-
-  # Introduce chain breaks for oligomers
-  idx_res = feature_dict['residue_index']
-  idx_res[chain_break:] += 200
-  feature_dict['residue_index'] = idx_res
-
-  relaxed_pdbs = {}
-  plddts = {}
-
-  # Run the models.
-  for model_name, model_runner in model_runners.items():
-    logging.info('Running model %s', model_name)
-    t_0 = time.time()
-    processed_feature_dict = model_runner.process_features(
-        feature_dict, random_seed=random_seed)
-    prediction_result = model_runner.predict(processed_feature_dict)
-
-    #Calculate the if contacts and if plDDT
-
-    # Get mean pLDDT confidence metric.
-    plddt = prediction_result['plddt']
-
-
-    # Add the predicted LDDT in the b-factor column.
-    # Note that higher predicted LDDT value means higher model confidence.
-    plddt_b_factors = np.repeat(
-        plddt[:, None], residue_constants.atom_type_num, axis=-1)
-    unrelaxed_protein = protein.from_prediction(
-        features=processed_feature_dict,
-        result=prediction_result,
-        b_factors=plddt_b_factors)
-
-    unrelaxed_pdb_path = os.path.join(output_dir, f'unrelaxed_{model_name}.pdb')
-
-    pdb_info, CB_coords = protein.to_pdb(unrelaxed_protein)
-
-    #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
-    #Cβs within 8 Å from each other from different chains are used to define the interface.
-    pdb.set_trace()
-
-
+#############Run PPI evaluation#############
 def main(num_ensemble,
         max_recycles,
         data_dir,
@@ -154,15 +87,14 @@ def main(num_ensemble,
   #Define the data pipeline
   data_pipeline = foldonly.FoldDataPipeline()
 
-  #Define the model runner
+  #Define the model runner - only once
   model_runners = {}
   for model_name in ['model_1']:
     model_config = config.model_config(model_name)
     model_config.data.eval.num_ensemble = num_ensemble
     model_config.data.common.num_recycle = max_recycles
     model_config.model.num_recycle = max_recycles
-    model_params = data.get_model_haiku_params(
-    model_name=model_name, data_dir=data_dir)
+    model_params = data.get_model_haiku_params(model_name=model_name, data_dir=data_dir)
     model_runner = model.RunModel(model_config, model_params)
     model_runners[model_name] = model_runner
 
@@ -173,6 +105,7 @@ def main(num_ensemble,
   target_row = protein_csv.loc[target_row]
   target_id = target_row.id
   target_seq = target_row.sequence
+  chain_break=len(target_seq)
   #Get the remaining rows - only use the subsequent rows (upper-triangular)
   remaining_rows = np.arange(len(protein_csv))[target_row:]
   #Check the previous preds
@@ -187,16 +120,47 @@ def main(num_ensemble,
   for i in remaining_rows[len(metrics):]:
     pdb.set_trace()
     row_i = protein_csv.loc[i]
-    num_contacts, avg_if_plddt = predict_structure(
-        fasta_path=fasta_path,
-        fasta_name=fasta_name,
-        chain_break=len(target_seq),
-        output_dir_base=FLAGS.output_dir,
-        data_pipeline=data_pipeline,
-        model_runners=model_runners,
-        amber_relaxer=amber_relaxer,
-        benchmark=FLAGS.benchmark,
-        random_seed=random_seed)
+
+    # Get features. The features are prefetched on CPU.
+    # The msas must be str representations of the blocked+paired MSAs here
+    feature_dict = data_pipeline.process(
+          input_fasta_path=fasta_path,
+          input_msas=msas,
+          template_search=None)
+
+    # Introduce chain breaks for oligomers
+    idx_res = feature_dict['residue_index']
+    idx_res[chain_break:] += 200
+    feature_dict['residue_index'] = idx_res #This assignment is unnecessary (already made?)
+
+    # Run the model - on GPU
+    for model_name, model_runner in model_runners.items():
+      processed_feature_dict = model_runner.process_features(
+          feature_dict, random_seed=random_seed)
+      prediction_result = model_runner.predict(processed_feature_dict)
+
+    #Calculate the if contacts and if plDDT
+
+    # Get pLDDT confidence metric.
+    plddt = prediction_result['plddt']
+
+
+    # Add the predicted LDDT in the b-factor column.
+    # Note that higher predicted LDDT value means higher model confidence.
+    plddt_b_factors = np.repeat(
+        plddt[:, None], residue_constants.atom_type_num, axis=-1)
+    unrelaxed_protein = protein.from_prediction(
+        features=processed_feature_dict,
+        result=prediction_result,
+        b_factors=plddt_b_factors)
+
+    #Get the pdb and CB coords
+    pdb_info, CB_coords = protein.to_pdb(unrelaxed_protein)
+    #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
+    #Cβs within 8 Å from each other from different chains are used to define the interface.
+
+    pdb.set_trace()
+
 
 
 

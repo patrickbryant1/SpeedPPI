@@ -95,7 +95,7 @@ class FoldDataPipeline:
       self.template_featurizer = template_featurizer
 
   def process(self, input_fasta_path: str, input_msas: list,
-              msa_output_dir: str, template_search: Optional[str]) -> FeatureDict:
+             template_search: Optional[str]) -> FeatureDict:
     """Runs alignment tools on the input sequence and creates features."""
     with open(input_fasta_path) as f:
       input_fasta_str = f.read()
@@ -110,14 +110,8 @@ class FoldDataPipeline:
     parsed_msas = []
     parsed_delmat = []
     for custom_msa in input_msas:
-      msa = ''.join([line for line in open(custom_msa)])
-      if custom_msa[-3:] == 'sto':
-        parsed_msa, parsed_deletion_matrix, _ = parsers.parse_stockholm(msa)
-      elif custom_msa[-3:] == 'a3m':
-        parsed_msa, parsed_deletion_matrix = parsers.parse_a3m(msa)
-      else: raise TypeError('Unknown format for input MSA, please make sure '
-                            'the MSA files you provide terminates with (and '
-                            'are formatted as) .sto or .a3m')
+      #msa = ''.join([line for line in open(custom_msa)])
+      parsed_msa, parsed_deletion_matrix = parsers.parse_a3m(msa)
       parsed_msas.append(parsed_msa)
       parsed_delmat.append(parsed_deletion_matrix)
 
