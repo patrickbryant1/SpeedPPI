@@ -106,7 +106,7 @@ class FoldDataPipeline:
     parsed_delmat = []
     for custom_msa in input_msas:
       #msa = ''.join([line for line in open(custom_msa)])
-      parsed_msa, parsed_deletion_matrix = parsers.parse_a3m(msa)
+      parsed_msa, parsed_deletion_matrix = parsers.parse_a3m(custom_msa)
       parsed_msas.append(parsed_msa)
       parsed_delmat.append(parsed_deletion_matrix)
 
