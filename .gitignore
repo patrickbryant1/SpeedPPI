@@ -1,0 +1,6 @@
+src/__pycache__/
+src/alphafold/common/__pycache__
+src/alphafold/data/__pycache__
+src/alphafold/data/tools/__pycache__
+src/alphafold/model/__pycache__
+src/alphafold/model/tf/__pycache__
