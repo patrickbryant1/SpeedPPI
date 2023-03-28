@@ -240,10 +240,6 @@ def main(num_ensemble,
 
   #Data loader
   pred_ds = Dataset(protein_csv, target_seq, target_id, remaining_rows, msa_dir)
-
-  #Try
-  example = pred_ds.get(remaining_rows[0])
-
   pred_data_gen = DataLoader(pred_ds, batch_size=1, num_workers=num_cpus)
 
   #Merge fasta and predict the structure for each of the sequences.
