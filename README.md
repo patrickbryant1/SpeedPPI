@@ -14,9 +14,9 @@ and generated MSAs.
 \
 Run the pipeline: \
 Input:
-1. A fasta file with sequences for all proteins you want to analyse
-2. Path to HHblits
-3. Output directory
+1. A fasta file with sequences for all proteins you want to analyse \
+2. Path to HHblits \
+3. Output directory \
 bash create_ppi.sh ./data/dev/test.fasta HHblits ./data/dev/
 \
 \

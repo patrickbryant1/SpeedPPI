@@ -54,7 +54,7 @@ done
 PR_CSV=$FASTADIR/id_seqs.csv
 NUM_PREDS=$(wc -l $PR_CSV|cut -d ' ' -f 1)
 NUM_PREDS=$(($NUM_PREDS-1))
-DATADIR=./data/params/
+DATADIR=./data/
 RECYCLES=10
 NUM_CPUS=1
 for (( c=1; c<=$NUM_PREDS; c++ ))
