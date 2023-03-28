@@ -3,8 +3,8 @@
 #ARGS
 #INPUT
 FASTA_SEQS=$1 #All fasta seqs
-HHBLITS=$2
-OUTDIR=$3 #Path to HHblits
+HHBLITS=$2 #Path to HHblits
+OUTDIR=$3
 #DEFAULT
 UNICLUST=./data/uniclust30/uniclust30_2018_08 #Assume path according to setup
 
@@ -24,13 +24,19 @@ echo "Writing fastas of each sequence to $FASTADIR"
 fi
 wait
 
-#2. Run HHblits for all fastas to create MSAs
+#2. Map Pfam domains with Deep Learning
+#The sequences with domain combinations that are already present
+#are removed. Interactions with these sequences are inferred after evaluation.
+#Cleanup
+
+#3. Run HHblits for all fastas to create MSAs
 MSADIR=$OUTDIR/msas/
 if [ -d "$MSADIR" ]; then
-  echo MSAS exists...
-  echo Remove $MSADIR if you want to make new MSAs.
+  echo MSAs exists...
+  echo Checking if all are present
 else
   mkdir $MSADIR
+fi
 for FASTA in $FASTADIR/*.fasta
 do
   ID=$(basename $FASTA)
@@ -39,10 +45,9 @@ do
   if [ -f "$MSADIR/$ID.a3m" ]; then
     echo $MSADIR/$ID.a3m exists
   else
+    echo Creating MSA for $ID
     $HHBLITS -i $FASTA -d $UNICLUST -E 0.001 -all -oa3m $MSADIR/$ID'.a3m'
   fi
 done
-fi
 
-
-#3. Predict the structure using a modified version of AlphaFold2 (FoldDock)
+#4. Predict the structure using a modified version of AlphaFold2 (FoldDock)
