@@ -128,7 +128,7 @@ class Dataset:
 
 
 #############Run PPI evaluation#############
-def score_PPI(CB_dists, plddt, l1):
+def score_PPI(CB_coords, plddt, l1):
     """Score the PPI
     """
 
@@ -137,7 +137,11 @@ def score_PPI(CB_dists, plddt, l1):
 
     #Get contacts
     contact_dists = CB_dists[:l1,l1:] #upper triangular --> first dim = chain 1
-    contacts = np.argwhere(contact_dists<=t)
+    contacts = np.argwhere(contact_dists<=8)
+
+    #Get plddt per chain
+    plddt1 = plddt[:l1]
+    plddt2 = plddt[l1:]
 
     if contacts.shape[0]<1:
         pdockq=0
@@ -175,13 +179,14 @@ def parse_atm_record(line):
 
     return record
 
-def save_design(unrelaxed_protein, output_name, l1):
+def save_design(pdb_info, output_name, l1):
     '''Save the resulting protein-peptide design to a pdb file
     '''
 
     chain_name = 'A'
     with open(output_name, 'w') as f:
-        pdb_contents = protein.to_pdb(unrelaxed_protein).split('\n')
+        pdb.set_trace()
+        pdb_contents = pdb_info.split('\n')
         for line in pdb_contents:
             try:
                 record = parse_atm_record(line)
@@ -271,12 +276,11 @@ def main(num_ensemble,
     #Get the pdb and CB coords
     pdb_info, CB_coords = protein.to_pdb(unrelaxed_protein)
     #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
-    pdockq, avg_if_plddt, n_if_contacts = score_PPI(CB_dists, plddt, l1)
+    pdockq, avg_if_plddt, n_if_contacts = score_PPI(CB_coords, plddt, l1)
     #Save if pDockQ>t
-    if pdockq>t:
-      output_name = output_dir+feature_dict['ID']+'.pdb'
-      save_design(unrelaxed_protein, output_name, l1)
-      pdb.set_trace()
+    output_name = output_dir+feature_dict['ID']+'.pdb'
+    save_design(pdb_info, output_name, l1)
+    pdb.set_trace()
 
 
 
