@@ -62,14 +62,15 @@ parser.add_argument('--output_dir', nargs=1, type= str, default=sys.stdin, help 
 ##########INPUT DATA#########
 class Dataset:
 
-    def __init__(self, indices, data_pipeline):
+    def __init__(self, dataset, indices):
+        #Data
         self.data = dataset
-
-        #Get the total dataset length
-        #This is necessary due to prefetching
+        #Indices
         if len(indices)<5:
             indices = np.repeat(indices, 5)
         self.indices = indices
+        #Size
+        self.size = len(indices)
 
     def __len__(self):
         return self.size
@@ -82,7 +83,7 @@ class Dataset:
         # The msas must be str representations of the blocked+paired MSAs here
         #Define the data pipeline
         data_pipeline = foldonly.FoldDataPipeline()
-        pdb.set_trace()
+        
         #Get features
         feature_dict = data_pipeline.process(
               input_fasta_path=fasta_path,
@@ -131,13 +132,12 @@ def main(num_ensemble,
   random_seed = random.randrange(sys.maxsize)
 
   #Get length of the first chain
-  target_row = protein_csv.loc[target_row]
-  target_id = target_row.id
-  target_seq = target_row.sequence
+  target_row_info = protein_csv.loc[target_row]
+  target_id = target_row_info.ID
+  target_seq = target_row_info.sequence
   chain_break=len(target_seq)
   #Get the remaining rows - only use the subsequent rows (upper-triangular)
-  remaining_rows = np.arange(len(protein_csv))[target_row:]
-
+  remaining_rows = np.arange(len(protein_csv))[target_row+1:]
   #Check the previous preds
   if os.path.exists(output_dir+target_id+'.csv'):
       metric_df = pd.read_csv(output_dir+target_id+'.csv')
@@ -147,7 +147,7 @@ def main(num_ensemble,
       metrics = {'ID1':[], 'ID2':[], 'num_contacts':[], 'avg_if_plddt':[]}
 
   #Data loader
-  pred_ds = Dataset(remaining_rows)
+  pred_ds = Dataset(protein_csv, remaining_rows)
   pred_data_gen = DataLoader(pred_ds, batch_size=1, num_workers=num_cpus)
 
   #Merge fasta and predict the structure for each of the sequences.
@@ -196,5 +196,5 @@ main(num_ensemble=1,
     msa_dir=args.msa_dir[0],
     output_dir=args.output_dir[0],
     protein_csv=pd.read_csv(args.protein_csv[0]),
-    target_row=args.target_row,
+    target_row=args.target_row[0]-1,
     num_cpus=args.num_cpus[0])
