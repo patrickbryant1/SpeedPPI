@@ -127,10 +127,17 @@ class Dataset:
         return feature_dict
 
 
-
-
-
 #############Run PPI evaluation#############
+def score_PPI(CB_dists, plddt):
+    """Score the PPI
+    """
+
+    #Cβs within 8 Å from each other from different chains are used to define the interface.
+    CB_dists = np.sqrt(np.sum((CB_coords[:,None]-CB_coords[None,:])**2,axis=-1))
+
+    #Get contacts
+    pdb.set_trace()
+
 def main(num_ensemble,
         max_recycles,
         data_dir,
@@ -197,12 +204,8 @@ def main(num_ensemble,
           feature_dict, random_seed=random_seed)
       prediction_result = model_runner.predict(processed_feature_dict)
 
-    #Calculate the if contacts and if plDDT
-    pdb.set_trace()
-    
     # Get pLDDT confidence metric.
     plddt = prediction_result['plddt']
-
 
     # Add the predicted LDDT in the b-factor column.
     # Note that higher predicted LDDT value means higher model confidence.
@@ -216,7 +219,7 @@ def main(num_ensemble,
     #Get the pdb and CB coords
     pdb_info, CB_coords = protein.to_pdb(unrelaxed_protein)
     #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
-    #Cβs within 8 Å from each other from different chains are used to define the interface.
+
 
     pdb.set_trace()
 

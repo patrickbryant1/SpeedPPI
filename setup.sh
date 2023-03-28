@@ -7,7 +7,7 @@
 
 #Download  Uniclust30
 echo "Getting unlclust30..."
-wget http://wwwuser.gwdg.de/~compbiol/uniclust/2018_08/uniclust30_2018_08_hhsuite.tar.gz
+wget http://wwwuser.gwdg.de/~compbiol/uniclust/2018_08/uniclust30_2018_08_hhsuite.tar.gz --no-check-certificate
 mkdir data/uniclust30
 mv uniclust30_2018_08_hhsuite.tar.gz data/uniclust30
 tar -zxvf data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz
