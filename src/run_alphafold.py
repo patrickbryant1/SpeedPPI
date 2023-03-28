@@ -128,7 +128,7 @@ class Dataset:
 
 
 #############Run PPI evaluation#############
-def score_PPI(CB_dists, plddt):
+def score_PPI(CB_dists, plddt, l1):
     """Score the PPI
     """
 
@@ -136,7 +136,23 @@ def score_PPI(CB_dists, plddt):
     CB_dists = np.sqrt(np.sum((CB_coords[:,None]-CB_coords[None,:])**2,axis=-1))
 
     #Get contacts
-    pdb.set_trace()
+    contact_dists = CB_dists[:l1,l1:] #upper triangular --> first dim = chain 1
+    contacts = np.argwhere(contact_dists<=t)
+
+    if contacts.shape[0]<1:
+        pdockq=0
+        avg_if_plddt=0
+        n_if_contacts=0
+    else:
+        #Get the average interface plDDT
+        avg_if_plddt = np.average(np.concatenate([plddt1[np.unique(contacts[:,0])], plddt2[np.unique(contacts[:,1])]]))
+        #Get the number of interface contacts
+        n_if_contacts = contacts.shape[0]
+        x = avg_if_plddt*np.log10(n_if_contacts)
+        pdockq = 0.724 / (1 + np.exp(-0.052*(x-152.611)))+0.018
+
+
+    return pdockq, avg_if_plddt, n_if_contacts
 
 def main(num_ensemble,
         max_recycles,
@@ -171,6 +187,7 @@ def main(num_ensemble,
   target_row_info = protein_csv.loc[target_row]
   target_id = target_row_info.ID
   target_seq = target_row_info.sequence
+  l1 = len(target_seq)
   chain_break=len(target_seq)
   #Get the remaining rows - only use the subsequent rows (upper-triangular)
   remaining_rows = np.arange(len(protein_csv))[target_row+1:]
@@ -219,11 +236,12 @@ def main(num_ensemble,
     #Get the pdb and CB coords
     pdb_info, CB_coords = protein.to_pdb(unrelaxed_protein)
     #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
+    pdockq, avg_if_plddt, n_if_contacts = score_PPI(CB_dists, plddt, l1)
+    #Save if pDockQ>t
+    if pDockQ>t:
+        pdb.set_trace()
 
-
-    pdb.set_trace()
-
-
+    
 
 
 ################MAIN################
