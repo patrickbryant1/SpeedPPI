@@ -1,4 +1,9 @@
 #Get requirements
+#conda install -c conda-forge -c bioconda hhsuite
+#git clone https://github.com/soedinglab/hh-suite.git
+#mkdir -p hh-suite/build && cd hh-suite/build
+#cmake -DCMAKE_INSTALL_PREFIX=. ..
+#make -j 4 && make install
 
 #Download  Uniclust30
 echo "Getting unlclust30..."
