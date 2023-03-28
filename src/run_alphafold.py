@@ -25,9 +25,7 @@ import sys
 import time
 from typing import Dict, Optional
 
-from absl import app
-from absl import flags
-from absl import logging
+import argparse
 from alphafold.common import protein
 from alphafold.common import residue_constants
 from alphafold.data import msaonly
@@ -45,34 +43,19 @@ from tinyloader import DataLoader
 
 import pdb
 
-##### essential flags #####
-flags.DEFINE_string('protein_csv', None,
-    'Path to a csv with all proteins to be evaluated in an all-vs-all fashion.')
-
-flags.DEFINE_int('target_row', None,
-    'What row index to use to compare to all others in the protein csv.')
-
-flags.DEFINE_list('fasta_dir', None,
-    'Paths to FASTA files, each containing '
-    'one sequence. Paths should be separated by commas. '
-    'All FASTA paths must have a unique basename as the '
-    'basename is used to name the output directories for '
-    'each prediction.')
 
 
-flags.DEFINE_list('msa_dir', None,
-    'Comma separated list of msa paths')
 
-flags.DEFINE_string('data_dir', None,
-    'Path to directory of supporting data (params).')
+parser = argparse.ArgumentParser(description = '''Predict a set of putative PPIs.''')
 
-flags.DEFINE_integer('max_recycles', 10,
-    'Number of recyles through the model')
+parser.add_argument('--protein_csv', nargs=1, type= str, default=sys.stdin, help = 'Path to csv file with all proteins to be evaluated in an all-vs-all fashion.')
+parser.add_argument('--target_row', nargs=1, type= int, default=sys.stdin, help = 'What row index to use to compare to all others in the protein csv.')
+parser.add_argument('--msa_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to dir with single chain MSAs.')
+parser.add_argument('--data_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to directory of supporting data (params).')
+parser.add_argument('--max_recycles', nargs=1, type= int, default=10, help = 'Number of recyles through the model.')
+parser.add_argument('--num_cpus', nargs=1, type= int, default=1, help = 'Number of available CPUs.')
+parser.add_argument('--output_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to a directory that will store the results.')
 
-flags.DEFINE_string('output_dir', None,
-    'Path to a directory that will store the results.')
-
-FLAGS = flags.FLAGS
 
 #######################FUNCTIONS#######################
 
@@ -99,6 +82,7 @@ class Dataset:
         # The msas must be str representations of the blocked+paired MSAs here
         #Define the data pipeline
         data_pipeline = foldonly.FoldDataPipeline()
+        pdb.set_trace()
         #Get features
         feature_dict = data_pipeline.process(
               input_fasta_path=fasta_path,
@@ -120,7 +104,6 @@ class Dataset:
 def main(num_ensemble,
         max_recycles,
         data_dir,
-        fasta_dir,
         msa_dir,
         output_dir,
         protein_csv,
@@ -205,12 +188,13 @@ def main(num_ensemble,
 
 
 ################MAIN################
+#Parse args
+args = parser.parse_args()
 main(num_ensemble=1,
-    max_recycles=FLAGS.max_recycles,
-    data_dir=FLAGS.data_dir,
-    fasta_dir=FLAGS.fasta_dir,
-    msa_dir=FLAGS.msa_dir,
-    output_dir=FLAGS.output_dir,
-    protein_csv=pd.read_csv(FLAGS.protein_csv),
-    target_row=FLAGS.target_row,
-    num_cpus=FLAFS.num_cpus)
+    max_recycles=args.max_recycles[0],
+    data_dir=args.data_dir[0],
+    msa_dir=args.msa_dir[0],
+    output_dir=args.output_dir[0],
+    protein_csv=pd.read_csv(args.protein_csv[0]),
+    target_row=args.target_row,
+    num_cpus=args.num_cpus[0])

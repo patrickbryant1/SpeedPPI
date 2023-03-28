@@ -55,11 +55,16 @@ PR_CSV=$FASTADIR/id_seqs.csv
 NUM_PREDS=$(wc -l $PR_CSV|cut -d ' ' -f 1)
 NUM_PREDS=$(($NUM_PREDS-1))
 DATADIR=./data/params/
+RECYCLES=10
+NUM_CPUS=1
 for (( c=1; c<=$NUM_PREDS; c++ ))
 do
   mkdir $OUTDIR'/pred'$c'/'
-  python3 ./src/run_alphafold.py --protein_csv=$PR_CSV \
-    --target_row=$c --fasta_dir=$FASTADIR \
-    --msa_dir=$MSADIR --data_dir=$DATADIR \
-    --output_dir=$OUTDIR'/pred'$c'/'
+  python3 ./src/run_alphafold.py --protein_csv $PR_CSV \
+    --target_row $c \
+    --msa_dir $MSADIR \
+    --data_dir $DATADIR \
+    --max_recycles $RECYCLES \
+    --num_cpus $NUM_CPUS \
+    --output_dir $OUTDIR'/pred'$c'/'
 done
