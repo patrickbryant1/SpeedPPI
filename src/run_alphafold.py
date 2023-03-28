@@ -154,6 +154,44 @@ def score_PPI(CB_dists, plddt, l1):
 
     return pdockq, avg_if_plddt, n_if_contacts
 
+def parse_atm_record(line):
+    '''Get the atm record
+    '''
+    record = defaultdict()
+    record['name'] = line[0:6].strip()
+    record['atm_no'] = int(line[6:11])
+    record['atm_name'] = line[12:16].strip()
+    record['atm_alt'] = line[17]
+    record['res_name'] = line[17:20].strip()
+    record['chain'] = line[21]
+    record['res_no'] = int(line[22:26])
+    record['insert'] = line[26].strip()
+    record['resid'] = line[22:29]
+    record['x'] = float(line[30:38])
+    record['y'] = float(line[38:46])
+    record['z'] = float(line[46:54])
+    record['occ'] = float(line[54:60])
+    record['B'] = float(line[60:66])
+
+    return record
+
+def save_design(unrelaxed_protein, output_name, l1):
+    '''Save the resulting protein-peptide design to a pdb file
+    '''
+
+    chain_name = 'A'
+    with open(output_name, 'w') as f:
+        pdb_contents = protein.to_pdb(unrelaxed_protein).split('\n')
+        for line in pdb_contents:
+            try:
+                record = parse_atm_record(line)
+                if record['res_no']>l1:
+                    chain_name='B'
+                outline = line[:21]+chain_name+line[22:]
+                f.write(outline+'\n')
+            except:
+                f.write(line+'\n')
+
 def main(num_ensemble,
         max_recycles,
         data_dir,
@@ -161,7 +199,8 @@ def main(num_ensemble,
         output_dir,
         protein_csv,
         target_row,
-        num_cpus):
+        num_cpus,
+        t=0):
 
   """Predict the structure of all possible interacting pairs to the protein in the target row.
   """
@@ -239,9 +278,11 @@ def main(num_ensemble,
     pdockq, avg_if_plddt, n_if_contacts = score_PPI(CB_dists, plddt, l1)
     #Save if pDockQ>t
     if pDockQ>t:
-        pdb.set_trace()
+      output_name = output_dir+feature_dict['ID']+'.pdb'
+      save_design(unrelaxed_protein, output_name, l1)
+      pdb.set_trace()
 
-    
+
 
 
 ################MAIN################
