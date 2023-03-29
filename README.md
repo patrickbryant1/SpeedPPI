@@ -18,11 +18,11 @@ The number of possible pairs grows exponentially with the number of input sequen
 As this number rapidly becomes too large to handle, we apply a number of techniques to speed up the
 network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the speedup is XXX times (for a set of 1000 proteins) and the memory reduction >97%.
 \
-We provide two options for running **SpeedPPI**:
-1. All-vs-all mode.
+We provide *two options* for running **SpeedPPI**:
+1. *All-vs-all* mode.
 - Runs all proteins in a fasta file against each other.
-2. Some-vs-some mode.
-- Runs all proteins in two different lists against each other
+2. *Some-vs-some* mode.
+- Runs all proteins in two different fasta files against each other.
 
 
 # Install dependencies
