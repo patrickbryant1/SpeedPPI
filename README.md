@@ -13,9 +13,9 @@ As this number rapidly becomes too large to handle, we apply a number of techniq
 network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the speedup is XXX times (for a set of 1000 proteins) and the memory reduction >97%.
 \
 We provide two options for running **SpeedPPI**:
-1. All-vs-all mode. \
+1. All-vs-all mode.
 - Runs all proteins in a fasta file against each other.
-2. Some-vs-some mode. \
+2. Some-vs-some mode.
 - Runs all proteins in two different lists against each other
 
 
@@ -52,8 +52,9 @@ tar -zxvf data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz -C data/uniclust30/
 ```
 
 \
-Run the pipeline: \
-Input:
+# Run the pipeline
+\
+- All-vs-all mode
 1. A fasta file with sequences for all proteins you want to analyse
 2. Path to HHblits
 3. Output directory
@@ -63,5 +64,8 @@ Try the test case:
 bash create_ppi.sh ./data/dev/test.fasta HHblits ./data/dev/
 ```
 \
+- Some-vs-some mode
+
+
 # Note
 If you have a computational cluster available, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi.sh are written in individual scripts assuming a SLURM infrastructure. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
