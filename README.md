@@ -12,9 +12,17 @@ n*(n-1)/2, where n is the number of input sequences.
 As this number rapidly becomes too large to handle, we apply a number of techniques to speed up the
 network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the speedup is XXX times (for a set of 1000 proteins) and the memory reduction >97%.
 \
+We provide two options for running **SpeedPPI**:
+1. All-vs-all mode. \
+- Runs all proteins in a fasta file against each other.
+2. Some-vs-some mode. \
+- Runs all proteins in two different lists against each other
+
+
 # Install dependencies
 
 *Python packages*
+\
 There are two options to install the packages used here:
 1. Install all packages to your local environment with python pip
 2. Install all packages into a conda environment (requires https://docs.conda.io/en/latest/miniconda.html)
@@ -23,6 +31,7 @@ Note that the prediction part here runs on GPU. You will therefore have to insta
 CUDA drivers for your system. Otherwise the GPU will not be used.
 
 *HHblits*
+\
 This is installed from source.
 ```
 git clone https://github.com/soedinglab/hh-suite.git
@@ -33,7 +42,8 @@ cd ..
 ```
 
 *Uniclust30*
-25 Gb Download, 87 Gb extracted
+\
+25 Gb download, 87 Gb extracted
 ```
 wget http://wwwuser.gwdg.de/~compbiol/uniclust/2018_08/uniclust30_2018_08_hhsuite.tar.gz --no-check-certificate
 mkdir data/uniclust30
