@@ -1,6 +1,9 @@
 # SpeedPPI
 
-This repository contains code for predicting the pairwise interaction network from a set of protein sequences. /
+This repository contains code for predicting the pairwise interaction network from a set of protein sequences.
+\
+<img src="./procedure.png" width="50%" height="50%"/>
+\
 The procedure is based on MSA creation and evaluation with AlphaFold2 adapted for pairwise interactions aka [FoldDock](https://www.nature.com/articles/s41467-022-28865-w) \
 \
 For an example study, see [Towards a structurally resolved human protein interaction network](https://www.nature.com/articles/s41594-022-00910-8) where 65,484 human protein interactions were evaluated.
@@ -51,21 +54,24 @@ mv uniclust30_2018_08_hhsuite.tar.gz data/uniclust30
 tar -zxvf data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz -C data/uniclust30/
 ```
 
-\
 # Run the pipeline
-\
+
 - All-vs-all mode
 1. A fasta file with sequences for all proteins you want to analyse
 2. Path to HHblits
 3. Output directory
 \
+\
 Try the test case:
 ```
 bash create_ppi.sh ./data/dev/test.fasta HHblits ./data/dev/
 ```
-\
+
 - Some-vs-some mode
 
+\
+\
+Try the test case:
 
 # Note
 If you have a computational cluster available, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi.sh are written in individual scripts assuming a SLURM infrastructure. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
