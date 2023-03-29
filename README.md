@@ -2,7 +2,7 @@
 
 This repository contains code for predicting the pairwise interaction network from a set of protein sequences.
 \
-<img src="./procedure.png" width="50%" height="50%"/>
+<img src="./procedure.png"/>
 \
 The procedure is based on MSA creation and evaluation with AlphaFold2 adapted for pairwise interactions aka [FoldDock](https://www.nature.com/articles/s41467-022-28865-w) \
 \
