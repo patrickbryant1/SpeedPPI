@@ -12,9 +12,10 @@ The AlphaFold2 parameters are made available under the terms of the [CC BY 4.0 l
 \
 For an example study, see [Towards a structurally resolved human protein interaction network](https://www.nature.com/articles/s41594-022-00910-8) where 65,484 human protein interactions were evaluated.
 \
+\
+\
 The number of possible pairs grows exponentially with the number of input sequences according to: \
 n*(n-1)/2, where n is the number of input sequences.
-\
 \
 As this number rapidly becomes too large to handle, we apply a number of techniques to speed up the
 network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the speedup is XXX times (for a set of 1000 proteins) and the memory reduction >97%.
