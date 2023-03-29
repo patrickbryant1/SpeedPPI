@@ -10,7 +10,6 @@ UNICLUST=./data/uniclust30/uniclust30_2018_08 #Assume path according to setup
 
 
 #The pipeline starts here
-
 #1. Create individual fastas
 FASTADIR=$OUTDIR/fasta/
 if [ -f "$FASTADIR/id_seqs.csv" ]; then
@@ -56,15 +55,22 @@ NUM_PREDS=$(wc -l $PR_CSV|cut -d ' ' -f 1)
 NUM_PREDS=$(($NUM_PREDS-1))
 DATADIR=./data/
 RECYCLES=10
+PDOCKQ_T=0.5
 NUM_CPUS=1
 for (( c=1; c<=$NUM_PREDS; c++ ))
 do
   mkdir $OUTDIR'/pred'$c'/'
+  echo Running pred $c out of $NUM_PREDS
   python3 ./src/run_alphafold.py --protein_csv $PR_CSV \
     --target_row $c \
     --msa_dir $MSADIR \
     --data_dir $DATADIR \
     --max_recycles $RECYCLES \
+    --pdockq_t $PDOCKQ_T \
     --num_cpus $NUM_CPUS \
     --output_dir $OUTDIR'/pred'$c'/'
 done
+
+#5. Construct a PPI network.
+#When the pDockQ > 0.5, the PPV is >0.9 (https://www.nature.com/articles/s41467-022-28865-w, https://www.nature.com/articles/s41594-022-00910-8)
+#The default threshold to construct edges (links) is 0.5

@@ -54,6 +54,7 @@ parser.add_argument('--target_row', nargs=1, type= int, default=sys.stdin, help 
 parser.add_argument('--msa_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to dir with single chain MSAs.')
 parser.add_argument('--data_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to directory of supporting data (params).')
 parser.add_argument('--max_recycles', nargs=1, type= int, default=10, help = 'Number of recyles through the model.')
+parser.add_argument('--pdockq_t', nargs=1, type= float, default=0.5, help = 'pDockQ threshold for saving structures. Default = 0.5')
 parser.add_argument('--num_cpus', nargs=1, type= int, default=1, help = 'Number of available CPUs.')
 parser.add_argument('--output_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to a directory that will store the results.')
 
@@ -204,7 +205,7 @@ def main(num_ensemble,
         protein_csv,
         target_row,
         num_cpus,
-        pdockq_t=0.5):
+        pdockq_t):
 
   """Predict the structure of all possible interacting pairs to the protein in the target row.
   """
@@ -304,4 +305,5 @@ main(num_ensemble=1,
     output_dir=args.output_dir[0],
     protein_csv=pd.read_csv(args.protein_csv[0]),
     target_row=args.target_row[0]-1,
-    num_cpus=args.num_cpus[0])
+    num_cpus=args.num_cpus[0],
+    pdockq_t=args.pdockq_t[0])
