@@ -204,7 +204,7 @@ def main(num_ensemble,
         protein_csv,
         target_row,
         num_cpus,
-        t=0):
+        pdockq_t=0.5):
 
   """Predict the structure of all possible interacting pairs to the protein in the target row.
   """
@@ -238,11 +238,14 @@ def main(num_ensemble,
   if os.path.exists(output_dir+target_id+'.csv'):
       metric_df = pd.read_csv(output_dir+target_id+'.csv')
       metrics = {'ID': metric_df.ID.values,
-                'num_contacts':metric_df.num_contacts.values, 'avg_if_plddt':metric_df.avg_if_plddt.values}
+                'num_contacts':metric_df.num_contacts.values,
+                'avg_if_plddt':metric_df.avg_if_plddt.values,
+                'pdockq':metric_df.pdockq.values}
   else:
-      metrics = {'ID':[], 'num_contacts':[], 'avg_if_plddt':[]}
+      metrics = {'ID':[], 'num_contacts':[], 'avg_if_plddt':[], 'pdockq':[]}
 
   #Data loader
+  #This prefetches single examples.
   pred_ds = Dataset(protein_csv, target_seq, target_id, remaining_rows, msa_dir)
   pred_data_gen = DataLoader(pred_ds, batch_size=1, num_workers=num_cpus)
 
@@ -277,9 +280,18 @@ def main(num_ensemble,
     #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
     pdockq, avg_if_plddt, n_if_contacts = score_PPI(CB_coords, plddt, l1)
     #Save if pDockQ>t
-    output_name = output_dir+feature_dict['ID']+'.pdb'
-    save_design(pdb_info, output_name, l1)
-    print(pdockq)
+    if pdockq > pdockq_t:
+        output_name = output_dir+feature_dict['ID']+'.pdb'
+        save_design(pdb_info, output_name, l1)
+    #Add to df
+    metrics['ID'].append(feature_dict['ID'])
+    metrics['num_contacts'].append(n_if_contacts)
+    metrics['avg_if_plddt'].append(avg_if_plddt)
+    metrics['pdockq'].append(pdockq)
+    #Save df
+    metric_df = pd.DataFrame.from_dict(metrics)
+    metric_df.to_csv(output_dir+target_id+'_metrics.csv', index=None)
+    print(feature_dict['ID'], pdockq)
 
 
 ################MAIN################
