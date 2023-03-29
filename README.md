@@ -14,9 +14,7 @@ For an example study, see [Towards a structurally resolved human protein interac
 \
 \
 \
-The number of possible pairs grows exponentially with the number of input sequences according to: \
-n*(n-1)/2, where n is the number of input sequences.
-\
+The number of possible pairs grows exponentially with the number of input sequences. \
 As this number rapidly becomes too large to handle, we apply a number of techniques to speed up the
 network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the speedup is XXX times (for a set of 1000 proteins) and the memory reduction >97%.
 \
