@@ -58,13 +58,20 @@ tar -zxvf data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz -C data/uniclust30/
 ```
 
 *Pfam annotation network*
-\
 ```
 wget -qN https://storage.googleapis.com/brain-genomics-public/research/proteins/pfam/models/single_domain_per_sequence_zipped_models/seed_random_32.0/
 mv 5356760.tar.gz src/domain_mapping/
 tar -xzf src/domain_mapping/5356760.tar.gz -C src/domain_mapping/
 ```
 
+*AlphaFold2 parameters*
+```
+mkdir data/params
+wget https://storage.googleapis.com/alphafold/alphafold_params_2021-07-14.tar
+mv alphafold_params_2021-07-14.tar data/params
+tar -xf data/params/alphafold_params_2021-07-14.tar
+mv params_model_1.npz data/params
+```
 
 *Cleanup - remove unnecessary files*
 ```
@@ -84,7 +91,7 @@ rm params_*.npz
 \
 Try the test case:
 ```
-bash create_ppi.sh ./data/dev/test.fasta HHblits ./data/dev/
+bash create_ppi_all_vs_all.sh ./data/dev/test.fasta HHblits ./data/dev/
 ```
 
 - Some-vs-some mode

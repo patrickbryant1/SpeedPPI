@@ -19,6 +19,8 @@ parser = argparse.ArgumentParser(description = '''Map all Pfam domains in a prot
                                                 ''')
 parser.add_argument('--protein_csv', nargs=1, type= str, default=sys.stdin, help = 'Path to csv file with all proteins to be evaluated in an all-vs-all fashion.')
 parser.add_argument('--target_row', nargs=1, type= int, default=sys.stdin, help = 'What row index to use to compare to all others in the protein csv.')
+parser.add_argument('--model_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to model dir.')
+parser.add_argument('--pfam_vocab', nargs=1, type= str, default=sys.stdin, help = 'Path to Pfam vocabulary.')
 parser.add_argument('--outdir', nargs=1, type= str, default=sys.stdin, help = 'Path to output csv')
 
 
@@ -39,6 +41,23 @@ parser.add_argument('--outdir', nargs=1, type= str, default=sys.stdin, help = 'P
 #From https://colab.research.google.com/github/google-research/google-research/blob/master/using_dl_to_annotate_protein_universe/neural_network/Neural_network_accuracy_on_random_seed_split.ipynb#scrollTo=Lp-3Ccx09IJ7
 ##############FUNCTIONS##############
 
+def sequence_to_window(sequence, min_len=50, max_len=200):
+    """Split a sequence into windows
+    """
+    seq_len = len(sequence)
+    min_len = min(seq_len, min_len)
+    max_len = min(seq_len, max_len)
+
+    #If too short - use entire seq
+    if min_len == max_len:
+        return [sequence]
+
+    #Go through and slice
+    seq_slices = []
+    for i in range(min_len, max_len+1):
+        for j in range(seq_len-i):
+            seq_slices.append(sequence[j:i+j])
+    return seq_slices
 
 
 AMINO_ACID_VOCABULARY = [
@@ -151,6 +170,8 @@ def infer(batch):
         })
 
 def predict_domains(sequences,
+                    model_dir,
+                    pfam_vocab,
                     batch_size=32):
     """Predict domains
     """
@@ -159,7 +180,7 @@ def predict_domains(sequences,
     graph = tf.Graph()
 
     with graph.as_default():
-      saved_model = tf.saved_model.load(sess, ['serve'], 'trn-_cnn_random__random_sp_gpu-cnn_for_random_pfam-5356760')
+      saved_model = tf.saved_model.load(sess, ['serve'], model_dir)
 
     top_pick_signature = saved_model.signature_def['serving_default']
     top_pick_signature_tensor_name = top_pick_signature.outputs['output'].name
@@ -167,20 +188,29 @@ def predict_domains(sequences,
     sequence_input_tensor_name = saved_model.signature_def['confidences'].inputs['sequence'].name
     sequence_lengths_input_tensor_name = saved_model.signature_def['confidences'].inputs['sequence_length'].name
 
-    with open('trained_model_pfam_32.0_vocab.json') as f:
+    with open(pfam_vocab) as f:
       vocab = json.loads(f.read())
 
     inference_results = []
     batches = list(batch_iterable(sequences, batch_size))
+    pdb.set_trace()
     for seq_batch in tqdm.tqdm(batches, position=0):
       inference_results.extend(infer(seq_batch))
+      pdb.set_trace()
 ##################MAIN#######################
 
 #Parse args
 args = parser.parse_args()
 protein_csv = pd.read_csv(args.protein_csv[0])
 target_row = args.target_row[0]
+model_dir = args.model_dir[0]
+pfam_vocab = args.pfam_vocab[0]
 outdir = args.outdir[0]
 
 target_row = protein_csv.loc[target_row]
+target_id, target_seq = target_row.ID, target_row.sequence
+#Slice the sequence to search for domains
+seq_slices = sequence_to_window(target_seq)
+#Predict
+predict_domains(seq_slices, model_dir, pfam_vocab)
 pdb.set_trace()

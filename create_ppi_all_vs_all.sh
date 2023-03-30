@@ -26,7 +26,18 @@ wait
 #2. Map Pfam domains with Deep Learning (https://www.nature.com/articles/s41587-021-01179-w#Sec1)
 #The sequences with domain combinations that are already present
 #are removed. Interactions with these sequences are inferred after evaluation.
-
+PR_CSV=$FASTADIR/id_seqs.csv
+MODEL_DIR=./src/domain_mapping/trn-_cnn_random__random_sp_gpu-cnn_for_random_pfam-5356760
+PFAM_VOCAB=./src/domain_mapping/trained_model_pfam_32.0_vocab.json
+NUM_PREDS=$(wc -l $PR_CSV|cut -d ' ' -f 1)
+NUM_PREDS=$(($NUM_PREDS-1))
+for (( c=1; c<=$NUM_PREDS; c++ ))
+do
+  echo Mapping domains for protein $c out of $NUM_PREDS
+  python3 src/domain_mapping/map_domains.py --protein_csv $PR_CSV \
+  --target_row $c --model_dir $MODEL_DIR \
+  --pfam_vocab $PFAM_VOCAB --outdir $FASTADIR
+done
 
 #3. Run HHblits for all fastas to create MSAs
 MSADIR=$OUTDIR/msas/
