@@ -57,6 +57,23 @@ mv uniclust30_2018_08_hhsuite.tar.gz data/uniclust30
 tar -zxvf data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz -C data/uniclust30/
 ```
 
+*Pfam annotation network*
+\
+```
+wget -qN https://storage.googleapis.com/brain-genomics-public/research/proteins/pfam/models/single_domain_per_sequence_zipped_models/seed_random_32.0/
+mv 5356760.tar.gz src/domain_mapping/
+tar -xzf src/domain_mapping/5356760.tar.gz -C src/domain_mapping/
+```
+
+
+*Cleanup - remove unnecessary files*
+```
+rm data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz
+rm src/domain_mapping/5356760.tar.gz
+rm data/params/alphafold_params_2021-07-14.tar
+rm params_*.npz
+```
+
 # Run the pipeline
 
 - All-vs-all mode
