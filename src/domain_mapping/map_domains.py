@@ -138,8 +138,20 @@ def batch_iterable(iterable, batch_size):
   if current:
     yield current
 
+def infer(batch):
+  seq_lens = [len(seq) for seq in batch]
+  one_hots = [residues_to_one_hot(seq) for seq in batch]
+  padded_sequence_inputs = [pad_one_hot_sequence(seq, max(seq_lens)) for seq in one_hots]
+  with graph.as_default():
+    return sess.run(
+        top_pick_signature_tensor_name,
+        {
+            sequence_input_tensor_name: padded_sequence_inputs,
+            sequence_lengths_input_tensor_name: seq_lens,
+        })
 
-def predict_domains():
+def predict_domains(sequences,
+                    batch_size=32):
     """Predict domains
     """
 
@@ -154,18 +166,21 @@ def predict_domains():
 
     sequence_input_tensor_name = saved_model.signature_def['confidences'].inputs['sequence'].name
     sequence_lengths_input_tensor_name = saved_model.signature_def['confidences'].inputs['sequence_length'].name
+
+    with open('trained_model_pfam_32.0_vocab.json') as f:
+      vocab = json.loads(f.read())
+
+    inference_results = []
+    batches = list(batch_iterable(sequences, batch_size))
+    for seq_batch in tqdm.tqdm(batches, position=0):
+      inference_results.extend(infer(seq_batch))
 ##################MAIN#######################
 
 #Parse args
 args = parser.parse_args()
-ids, seqs = read_fasta(args.fasta_file[0])
+protein_csv = pd.read_csv(args.protein_csv[0])
+target_row = args.target_row[0]
 outdir = args.outdir[0]
 
-#Create a df
-fasta_df = pd.DataFrame()
-fasta_df['ID'] = ids
-fasta_df['sequence'] = seqs
-#Save df
-fasta_df.to_csv(outdir+'id_seqs.csv', index=None)
-#Write individual fastas
-write_fasta(fasta_df, outdir)
+target_row = protein_csv.loc[target_row]
+pdb.set_trace()
