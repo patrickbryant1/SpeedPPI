@@ -23,10 +23,10 @@ echo "Writing fastas of each sequence to $FASTADIR"
 fi
 wait
 
-#2. Map Pfam domains with Deep Learning
+#2. Map Pfam domains with Deep Learning (https://www.nature.com/articles/s41587-021-01179-w#Sec1)
 #The sequences with domain combinations that are already present
 #are removed. Interactions with these sequences are inferred after evaluation.
-#Cleanup
+
 
 #3. Run HHblits for all fastas to create MSAs
 MSADIR=$OUTDIR/msas/
@@ -71,6 +71,6 @@ do
     --output_dir $OUTDIR'/pred'$c'/'
 done
 
-#5. Construct a PPI network.
+#5. Merge all predictions to construct a PPI network.
 #When the pDockQ > 0.5, the PPV is >0.9 (https://www.nature.com/articles/s41467-022-28865-w, https://www.nature.com/articles/s41594-022-00910-8)
 #The default threshold to construct edges (links) is 0.5

@@ -5,3 +5,4 @@ src/alphafold/data/tools/__pycache__
 src/alphafold/model/__pycache__
 src/alphafold/model/tf/__pycache__
 data/params
+src/domain_mapping/trn-_cnn_random__random_sp_gpu-cnn_for_random_pfam-5356760
