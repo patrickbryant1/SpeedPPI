@@ -246,7 +246,6 @@ def find_max_confidence_regions(confidences, domain_pos, start_points, end_point
         ds_i = start_points[i]
         de_i = end_points[i]
         dp_i = domain_pos[i]
-        print(confidences[i], ds_i, de_i)
         #Check overap (before start or after end)
         no_overlap=True
         for j in range(len(annotated_domains_sp)):
@@ -276,8 +275,9 @@ model_dir = args.model_dir[0]
 pfam_vocab = args.pfam_vocab[0]
 outdir = args.outdir[0]
 
-target_row = protein_csv.loc[target_row]
-target_id, target_seq = target_row.ID, target_row.sequence
+
+sel_row = protein_csv.loc[target_row-1]
+target_id, target_seq = sel_row.ID, sel_row.sequence
 #Slice the sequence to search for domains
 seq_slices, start_points, end_points = sequence_to_window(target_seq)
 #Predict
@@ -289,4 +289,4 @@ domain_df = pd.DataFrame()
 domain_df['ID'] = [target_id]
 domain_df['target_seq']=[target_seq]
 domain_df['pred_domains']=[mapped_domains]
-domain_df.to_csv(outdir+target_id+'_domains.csv', index=None)
+domain_df.to_csv(outdir+str(sel_row)+'_domains.csv', index=None)
