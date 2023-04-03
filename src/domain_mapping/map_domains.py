@@ -191,7 +191,7 @@ def predict_domains(sequences,
     inference_results = []
     inference_confidences = []
     batches = list(batch_iterable(sequences, batch_size))
-    for batch in tqdm.tqdm(batches[:10], position=0):
+    for batch in tqdm.tqdm(batches, position=0):
       seq_lens = [len(seq) for seq in batch]
       one_hots = [residues_to_one_hot(seq) for seq in batch]
       padded_sequence_inputs = [pad_one_hot_sequence(seq, max(seq_lens)) for seq in one_hots]
@@ -210,34 +210,60 @@ def predict_domains(sequences,
     #Find domains
     #Go through all non-overlapping regions and find the highest confidences
     #Report these as domains following: https://www.nature.com/articles/s41587-021-01179-w#Sec4
-    pdb.set_trace()
+    annotated_domains = find_max_confidence_regions(inference_confidences, inference_results, start_points, end_points)
 
     #Map to Pfam vocab
     #Load vocab
     with open(pfam_vocab, 'r') as f:
         vocab = json.loads(f.read())
-    pfam_mapping = [vocab[i] for i in inference_results]
-    pdb.set_trace()
+    pfam_mapping = [vocab[i] for i in annotated_domains]
+
+    return pfam_mapping
 
 
 def find_max_confidence_regions(confidences, domain_pos, start_points, end_points):
     """Go through all the predicted confidences and annotate the non-overlapping regions
     """
 
+    #Predicted domains
     annotated_domains = []
-
     #Get the first domain
     fdp = np.argmax(confidences)
     annotated_domains.append(domain_pos[fdp])
-    ads = start_points[fdp]
-    ade = end_points[fdp]
+    annotated_domains_sp = [start_points[fdp]]
+    annotated_domains_ep = [end_points[fdp]]
+
+    #Sort the confidences
+    order = np.argsort(confidences)[::-1]
+    confidences = np.array(confidences)[order]
+    domain_pos = np.array(domain_pos)[order]
+    start_points = np.array(start_points)[order]
+    end_points = np.array(end_points)[order]
+
     #Go through all domains and see if they are in another region
     for i in range(len(confidences)):
+
         ds_i = start_points[i]
         de_i = end_points[i]
+        dp_i = domain_pos[i]
+        print(confidences[i], ds_i, de_i)
         #Check overap (before start or after end)
-        if de_i < ads or ds_i > ade):
-            pdb.set_trace()
+        no_overlap=True
+        for j in range(len(annotated_domains_sp)):
+            ads, ade = annotated_domains_sp[j], annotated_domains_ep[j]
+            if de_i < ads or ds_i > ade:
+                continue
+            else:
+                no_overlap=False
+                break
+        #Check if in annotated domains
+        if (no_overlap==True) and (dp_i not in annotated_domains):
+            #Save
+            annotated_domains.append(dp_i)
+            annotated_domains_sp.append(ds_i)
+            annotated_domains_ep.append(de_i)
+
+    return annotated_domains
 
 
 ##################MAIN#######################
