@@ -6,6 +6,8 @@ import pandas as pd
 import json
 import numpy as np
 import tensorflow.compat.v1 as tf
+from collections import Counter
+import matplotlib.pyplot as plt
 import tqdm
 
 # Suppress noisy log messages.
@@ -53,11 +55,13 @@ def sequence_to_window(sequence, min_len=50, max_len=200):
         return [sequence]
 
     #Go through and slice
-    seq_slices = []
+    seq_slices, start_points, end_points = [], [], []
     for i in range(min_len, max_len+1):
         for j in range(seq_len-i):
             seq_slices.append(sequence[j:i+j])
-    return seq_slices
+            start_points.append(j)
+            end_points.append(i+j)
+    return seq_slices, start_points, end_points
 
 
 AMINO_ACID_VOCABULARY = [
@@ -157,19 +161,9 @@ def batch_iterable(iterable, batch_size):
   if current:
     yield current
 
-def infer(batch):
-  seq_lens = [len(seq) for seq in batch]
-  one_hots = [residues_to_one_hot(seq) for seq in batch]
-  padded_sequence_inputs = [pad_one_hot_sequence(seq, max(seq_lens)) for seq in one_hots]
-  with graph.as_default():
-    return sess.run(
-        top_pick_signature_tensor_name,
-        {
-            sequence_input_tensor_name: padded_sequence_inputs,
-            sequence_lengths_input_tensor_name: seq_lens,
-        })
-
 def predict_domains(sequences,
+                    start_points,
+                    end_points,
                     model_dir,
                     pfam_vocab,
                     batch_size=32):
@@ -182,8 +176,11 @@ def predict_domains(sequences,
     with graph.as_default():
       saved_model = tf.saved_model.load(sess, ['serve'], model_dir)
 
-    top_pick_signature = saved_model.signature_def['serving_default']
-    top_pick_signature_tensor_name = top_pick_signature.outputs['output'].name
+    #top_pick_signature = saved_model.signature_def['serving_default']
+    #top_pick_signature_tensor_name = top_pick_signature.outputs['output'].name
+
+    class_confidence_signature = saved_model.signature_def['confidences']
+    class_confidence_signature_tensor_name = class_confidence_signature.outputs['output'].name
 
     sequence_input_tensor_name = saved_model.signature_def['confidences'].inputs['sequence'].name
     sequence_lengths_input_tensor_name = saved_model.signature_def['confidences'].inputs['sequence_length'].name
@@ -192,11 +189,57 @@ def predict_domains(sequences,
       vocab = json.loads(f.read())
 
     inference_results = []
+    inference_confidences = []
     batches = list(batch_iterable(sequences, batch_size))
+    for batch in tqdm.tqdm(batches[:10], position=0):
+      seq_lens = [len(seq) for seq in batch]
+      one_hots = [residues_to_one_hot(seq) for seq in batch]
+      padded_sequence_inputs = [pad_one_hot_sequence(seq, max(seq_lens)) for seq in one_hots]
+      with graph.as_default():
+        ir = sess.run(
+            class_confidence_signature_tensor_name,
+            {
+                sequence_input_tensor_name: padded_sequence_inputs,
+                sequence_lengths_input_tensor_name: seq_lens,
+            })
+
+      inference_results.extend(np.argmax(ir,axis=-1))
+      inference_confidences.extend(np.max(ir,axis=-1))
+
+
+    #Find domains
+    #Go through all non-overlapping regions and find the highest confidences
+    #Report these as domains following: https://www.nature.com/articles/s41587-021-01179-w#Sec4
     pdb.set_trace()
-    for seq_batch in tqdm.tqdm(batches, position=0):
-      inference_results.extend(infer(seq_batch))
-      pdb.set_trace()
+
+    #Map to Pfam vocab
+    #Load vocab
+    with open(pfam_vocab, 'r') as f:
+        vocab = json.loads(f.read())
+    pfam_mapping = [vocab[i] for i in inference_results]
+    pdb.set_trace()
+
+
+def find_max_confidence_regions(confidences, domain_pos, start_points, end_points):
+    """Go through all the predicted confidences and annotate the non-overlapping regions
+    """
+
+    annotated_domains = []
+
+    #Get the first domain
+    fdp = np.argmax(confidences)
+    annotated_domains.append(domain_pos[fdp])
+    ads = start_points[fdp]
+    ade = end_points[fdp]
+    #Go through all domains and see if they are in another region
+    for i in range(len(confidences)):
+        ds_i = start_points[i]
+        de_i = end_points[i]
+        #Check overap (before start or after end)
+        if de_i < ads or ds_i > ade):
+            pdb.set_trace()
+
+
 ##################MAIN#######################
 
 #Parse args
@@ -210,7 +253,7 @@ outdir = args.outdir[0]
 target_row = protein_csv.loc[target_row]
 target_id, target_seq = target_row.ID, target_row.sequence
 #Slice the sequence to search for domains
-seq_slices = sequence_to_window(target_seq)
+seq_slices, start_points, end_points = sequence_to_window(target_seq)
 #Predict
-predict_domains(seq_slices, model_dir, pfam_vocab)
+mapped_domains = predict_domains(seq_slices, start_points, end_points, model_dir, pfam_vocab)
 pdb.set_trace()
