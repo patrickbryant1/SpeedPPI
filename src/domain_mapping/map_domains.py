@@ -43,7 +43,7 @@ parser.add_argument('--outdir', nargs=1, type= str, default=sys.stdin, help = 'P
 #From https://colab.research.google.com/github/google-research/google-research/blob/master/using_dl_to_annotate_protein_universe/neural_network/Neural_network_accuracy_on_random_seed_split.ipynb#scrollTo=Lp-3Ccx09IJ7
 ##############FUNCTIONS##############
 
-def sequence_to_window(sequence, min_len=50, max_len=200):
+def sequence_to_window(sequence, min_len=50, max_len=300):
     """Split a sequence into windows
     """
     seq_len = len(sequence)
@@ -281,7 +281,7 @@ target_id, target_seq = target_row.ID, target_row.sequence
 #Slice the sequence to search for domains
 seq_slices, start_points, end_points = sequence_to_window(target_seq)
 #Predict
-to = time.time()
+t0 = time.time()
 mapped_domains = predict_domains(seq_slices, start_points, end_points, model_dir, pfam_vocab)
 t1 = time.time()
 print('It took',np.round(t1-t0),'s to map the domains.')
