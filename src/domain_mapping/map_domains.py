@@ -7,7 +7,7 @@ import json
 import numpy as np
 import tensorflow.compat.v1 as tf
 from collections import Counter
-import matplotlib.pyplot as plt
+import time
 import tqdm
 
 # Suppress noisy log messages.
@@ -281,5 +281,12 @@ target_id, target_seq = target_row.ID, target_row.sequence
 #Slice the sequence to search for domains
 seq_slices, start_points, end_points = sequence_to_window(target_seq)
 #Predict
+to = time.time()
 mapped_domains = predict_domains(seq_slices, start_points, end_points, model_dir, pfam_vocab)
-pdb.set_trace()
+t1 = time.time()
+print('It took',np.round(t1-t0),'s to map the domains.')
+domain_df = pd.DataFrame()
+domain_df['ID'] = [target_id]
+domain_df['target_seq']=[target_seq]
+domain_df['pred_domains']=[mapped_domains]
+domain_df.to_csv(outdir+target_id+'_domains.csv', index=None)
