@@ -2,7 +2,7 @@
 
 This repository contains code for predicting a pairwise protein-protein interaction network from a set of protein sequences.
 \
-<img src="./procedure.png"/>
+<img src="./procedure.jpg"/>
 \
 The procedure is based on MSA creation and evaluation with AlphaFold2 adapted for pairwise interactions aka [FoldDock](https://www.nature.com/articles/s41467-022-28865-w) \
 AlphaFold2 is available under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) and so is SpeedPPI, which is a derivative thereof.  \
