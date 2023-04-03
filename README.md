@@ -83,7 +83,7 @@ rm params_*.npz
 
 # Run the pipeline
 
-- All-vs-all mode
+- All-vs-all mode. Input paths to the following resources
 1. A fasta file with sequences for all proteins you want to analyse
 2. Path to HHblits
 3. Output directory
@@ -101,4 +101,4 @@ bash create_ppi_all_vs_all.sh ./data/dev/test.fasta HHblits ./data/dev/
 Try the test case:
 
 # Note
-If you have a computational cluster available, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi.sh are written in individual scripts assuming a SLURM infrastructure. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
+If you have a computational cluster available, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi[all_vs_all, some_vs_some].sh are written in individual scripts assuming a SLURM infrastructure in ./src/parallel/. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
