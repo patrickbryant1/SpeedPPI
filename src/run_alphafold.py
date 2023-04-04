@@ -72,7 +72,7 @@ class Dataset:
         self.target_id = target_id
         #Indices
         if len(indices)<5:
-            indices = np.repeat(indices, 5)
+            indices = np.concatenate([indices]*5)
         self.indices = indices
         print(indices)
         #Size
@@ -84,7 +84,6 @@ class Dataset:
         return self.size
 
     def __getitem__(self, index):
-
         #Here the dataloading takes place
         print(index)
         index = self.indices[index] #This allows for loading more ex than indices
@@ -257,8 +256,11 @@ def main(num_ensemble,
     # Load an input example - on CPU
     batch = next(pred_data_gen)
     feature_dict = batch[0]
+    print('Evaluating pair', feature_dict['ID'])
+    pdb.set_trace()
     #Check if this is already predicted
     if feature_dict['ID'] in metrics['ID']:
+      print('Pred already exists for', feature_dict['ID'])
       continue
     # Run the model - on GPU
     t0 = time.time()
