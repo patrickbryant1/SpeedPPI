@@ -83,7 +83,7 @@ rm params_*.npz
 \
 Try the test case:
 ```
-bash create_ppi_all_vs_all.sh ./data/dev/test.fasta hh-suite/build/bin/hhblits ./data/dev/
+bash create_ppi_all_vs_all.sh ./data/dev/test.fasta hh-suite/build/bin/hhblits ./data/dev/all_vs_all/
 ```
 
 - Some-vs-some mode
@@ -96,7 +96,7 @@ bash create_ppi_all_vs_all.sh ./data/dev/test.fasta hh-suite/build/bin/hhblits .
 \
 Try the test case:
 ```
-bash create_ppi_some_vs_some.sh ./data/dev/test1.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits ./data/dev/
+bash create_ppi_some_vs_some.sh ./data/dev/test1.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits ./data/dev/some_vs_some/
 ```
 
 # Note
