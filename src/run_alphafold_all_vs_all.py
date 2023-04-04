@@ -72,7 +72,7 @@ class Dataset:
         self.target_id = target_id
         #Indices
         if len(indices)<5:
-            indices = np.repeat(indices, 5)
+            indices = np.concatenate([indices]*5)
         self.indices = indices
 
         #Size
@@ -240,10 +240,10 @@ def main(num_ensemble,
   #Check the previous preds
   if os.path.exists(output_dir+target_id+'_metrics.csv'):
       metric_df = pd.read_csv(output_dir+target_id+'_metrics.csv')
-      metrics = {'ID': metric_df.ID.values,
-                'num_contacts':metric_df.num_contacts.values,
-                'avg_if_plddt':metric_df.avg_if_plddt.values,
-                'pdockq':metric_df.pdockq.values}
+      metrics = {'ID': [*metric_df.ID.values],
+                'num_contacts':[*metric_df.num_contacts.values],
+                'avg_if_plddt':[*metric_df.avg_if_plddt.values],
+                'pdockq':[*metric_df.pdockq.values]}
   else:
       metrics = {'ID':[], 'num_contacts':[], 'avg_if_plddt':[], 'pdockq':[]}
 
