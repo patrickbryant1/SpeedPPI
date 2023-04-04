@@ -237,8 +237,8 @@ def main(num_ensemble,
   #Get the remaining rows - only use the subsequent rows (upper-triangular)
   remaining_rows = np.arange(len(protein_csv))[target_row+1:]
   #Check the previous preds
-  if os.path.exists(output_dir+target_id+'.csv'):
-      metric_df = pd.read_csv(output_dir+target_id+'.csv')
+  if os.path.exists(output_dir+target_id+'_metrics.csv'):
+      metric_df = pd.read_csv(output_dir+target_id+'_metrics.csv')
       metrics = {'ID': metric_df.ID.values,
                 'num_contacts':metric_df.num_contacts.values,
                 'avg_if_plddt':metric_df.avg_if_plddt.values,
