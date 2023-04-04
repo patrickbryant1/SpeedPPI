@@ -86,7 +86,6 @@ class Dataset:
     def __getitem__(self, index):
 
         #Here the dataloading takes place
-        print(index)
         index = self.indices[index] #This allows for loading more ex than indices
         row = self.data.loc[index]
         id_i, seq_i = row.ID, row.sequence
