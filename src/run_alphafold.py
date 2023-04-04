@@ -74,6 +74,7 @@ class Dataset:
         if len(indices)<5:
             indices = np.concatenate([indices]*5)
         self.indices = indices
+        print(indices)
         #Size
         self.size = len(indices)
         #MSA dir
@@ -84,6 +85,7 @@ class Dataset:
 
     def __getitem__(self, index):
         #Here the dataloading takes place
+        print(index)
         index = self.indices[index] #This allows for loading more ex than indices
         row = self.data.loc[index]
         id_i, seq_i = row.ID, row.sequence
