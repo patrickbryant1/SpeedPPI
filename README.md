@@ -2,7 +2,7 @@
 
 This repository contains code for predicting a pairwise protein-protein interaction network from a set of protein sequences.
 \
-<img src="./procedure.png"/>
+<img src="./procedure.jpg"/>
 \
 The procedure is based on MSA creation and evaluation with AlphaFold2 adapted for pairwise interactions aka [FoldDock](https://www.nature.com/articles/s41467-022-28865-w) \
 AlphaFold2 is available under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) and so is SpeedPPI, which is a derivative thereof.  \
@@ -16,7 +16,7 @@ For an example study, see [Towards a structurally resolved human protein interac
 \
 The number of possible pairs grows exponentially with the number of input sequences. \
 As this number rapidly becomes too large to handle, we apply a number of techniques to speed up the
-network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the speedup is XXX times (for a set of 1000 proteins) and the memory reduction >97%.
+network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the **speedup is 11000 times** (for a set of 1000 proteins, 499500 pairwise interactions) and the **disk space reduction 845000 times**.
 \
 We provide *two options* for running **SpeedPPI**:
 1. *All-vs-all* mode.
@@ -57,13 +57,6 @@ mv uniclust30_2018_08_hhsuite.tar.gz data/uniclust30
 tar -zxvf data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz -C data/uniclust30/
 ```
 
-*Pfam annotation network*
-```
-wget -qN https://storage.googleapis.com/brain-genomics-public/research/proteins/pfam/models/single_domain_per_sequence_zipped_models/seed_random_32.0/
-mv 5356760.tar.gz src/domain_mapping/
-tar -xzf src/domain_mapping/5356760.tar.gz -C src/domain_mapping/
-```
-
 *AlphaFold2 parameters*
 ```
 mkdir data/params
@@ -76,29 +69,35 @@ mv params_model_1.npz data/params
 *Cleanup - remove unnecessary files*
 ```
 rm data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz
-rm src/domain_mapping/5356760.tar.gz
 rm data/params/alphafold_params_2021-07-14.tar
 rm params_*.npz
 ```
 
 # Run the pipeline
 
-- All-vs-all mode
+- All-vs-all mode. Input paths to the following resources (separated by space)
 1. A fasta file with sequences for all proteins you want to analyse
-2. Path to HHblits
+2. Path to HHblits (default: hh-suite/build/bin/hhblits)
 3. Output directory
 \
 \
 Try the test case:
 ```
-bash create_ppi_all_vs_all.sh ./data/dev/test.fasta HHblits ./data/dev/
+bash create_ppi_all_vs_all.sh ./data/dev/test.fasta hh-suite/build/bin/hhblits ./data/dev/
 ```
 
 - Some-vs-some mode
+1. A fasta file with sequences for the proteins in list 1
+1. A fasta file with sequences for the proteins in list 2
+2. Path to HHblits
+3. Output directory
 
 \
 \
 Try the test case:
+```
+bash create_ppi_some_vs_some.sh ./data/dev/test1.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits ./data/dev/
+```
 
 # Note
-If you have a computational cluster available, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi.sh are written in individual scripts assuming a SLURM infrastructure. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
+If you have a computational cluster available, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi[all_vs_all, some_vs_some].sh are written in individual scripts assuming a SLURM infrastructure in ./src/parallel/. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!

@@ -259,11 +259,13 @@ def main(num_ensemble,
     if feature_dict['ID'] in metrics['ID']:
       continue
     # Run the model - on GPU
+    t0 = time.time()
     for model_name, model_runner in model_runners.items():
       processed_feature_dict = model_runner.process_features(
           feature_dict, random_seed=random_seed)
       prediction_result = model_runner.predict(processed_feature_dict)
-
+    t1 = time.time()
+    print('It took',t1-t0,'s to predict the interaction.')
     # Get pLDDT confidence metric.
     plddt = prediction_result['plddt']
 
