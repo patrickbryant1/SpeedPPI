@@ -72,7 +72,7 @@ class Dataset:
         self.target_id = target_id
         #Indices
         if len(indices)<5:
-            indices = np.repeat(indices, 5)
+            indices = np.concatenate([indices]*5)
         self.indices = indices
 
         #Size
