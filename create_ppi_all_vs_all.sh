@@ -56,7 +56,7 @@ for (( c=1; c<=$NUM_PREDS; c++ ))
 do
   mkdir $OUTDIR'/pred'$c'/'
   echo Running pred $c out of $NUM_PREDS
-  python3 ./src/run_alphafold.py --protein_csv $PR_CSV \
+  python3 ./src/run_alphafold_all_vs_all.py --protein_csv $PR_CSV \
     --target_row $c \
     --msa_dir $MSADIR \
     --data_dir $DATADIR \
