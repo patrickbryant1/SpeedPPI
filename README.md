@@ -1,6 +1,6 @@
 # SpeedPPI
 
-This repository contains code for predicting a pairwise protein-protein interaction network from a set of protein sequences.
+This repository contains code for predicting a pairwise protein-protein interaction network from a set of protein sequences or two lists of sequences thought to interact.
 \
 <img src="./procedure.jpg"/>
 \
