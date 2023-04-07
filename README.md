@@ -35,7 +35,7 @@ If you like SpeedPPI, please star this repo and if you use it in your research p
 
 # Install dependencies
 
-## Python packages
+### Python packages
 
 There are two options to install the packages used here.
 
