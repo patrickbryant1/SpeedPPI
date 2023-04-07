@@ -5,7 +5,8 @@
 FASTA_SEQS1=$1 #All fasta seqs from list 1
 FASTA_SEQS2=$2 #All fasta seqs from list 1
 HHBLITS=$3 #Path to HHblits
-OUTDIR=$4
+PDOCKQ_T=$4
+OUTDIR=$5
 #DEFAULT
 UNICLUST=./data/uniclust30/uniclust30_2018_08 #Assume path according to setup
 
@@ -76,18 +77,19 @@ done
 
 
 #3. Predict the structure using a modified version of AlphaFold2 (FoldDock)
-PR_CSV=$FASTADIR/id_seqs.csv
-NUM_PREDS=$(wc -l $PR_CSV|cut -d ' ' -f 1)
+PR_CSV1=$OUTDIR/fasta1/id_seqs.csv
+PR_CSV2=$OUTDIR/fasta2/id_seqs.csv
+NUM_PREDS=$(wc -l $PR_CSV1|cut -d ' ' -f 1)
 NUM_PREDS=$(($NUM_PREDS-1))
 DATADIR=./data/
 RECYCLES=10
-PDOCKQ_T=0.5
 NUM_CPUS=1
 for (( c=1; c<=$NUM_PREDS; c++ ))
 do
   mkdir $OUTDIR'/pred'$c'/'
   echo Running pred $c out of $NUM_PREDS
-  python3 ./src/run_alphafold_some_vs_some.py --protein_csv $PR_CSV \
+  python3 ./src/run_alphafold_some_vs_some.py --protein_csv1 $PR_CSV1 \
+  --protein_csv1 $PR_CSV2 \
     --target_row $c \
     --msa_dir $MSADIR \
     --data_dir $DATADIR \
@@ -100,3 +102,10 @@ done
 #4. Merge all predictions to construct a PPI network.
 #When the pDockQ > 0.5, the PPV is >0.9 (https://www.nature.com/articles/s41467-022-28865-w, https://www.nature.com/articles/s41594-022-00910-8)
 #The default threshold to construct edges (links) is 0.5
+python3 ./src/build_ppi.py --pred_dir $OUTDIR/ \
+--pdockq_t $PDOCKQ_T --outdir $OUTDIR/
+
+#5. Move all high-confidence predictions to a dir
+mkdir $OUTDIR'/high_confidence_preds/'
+mv $OUTDIR/pred*/*.pdb $OUTDIR'/high_confidence_preds/'
+echo Moved all high confidence predictions to $OUTDIR'/high_confidence_preds/'

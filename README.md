@@ -100,28 +100,28 @@ rm params_*.npz
 - Input paths to the following resources (separated by space)
 1. A fasta file with sequences for all proteins you want to analyse
 2. Path to HHblits (default: hh-suite/build/bin/hhblits)
-3. Output directory
-4. pDockQ threshold. This determines what structures are saved to disk. (0.5 is recommended)
+3. pDockQ threshold. This determines what structures are saved to disk. (0.5 is recommended)
+4. Output directory
 \
 \
 Try the test case:
 ```
-bash create_ppi_all_vs_all.sh ./data/dev/test.fasta hh-suite/build/bin/hhblits ./data/dev/all_vs_all/ 0.5
+bash create_ppi_all_vs_all.sh ./data/dev/test.fasta hh-suite/build/bin/hhblits 0.5 ./data/dev/all_vs_all/
 ```
 
 ###  Some-vs-some mode
 - Input paths to the following resources (separated by space)
 1. A fasta file with sequences for the proteins in list 1
-1. A fasta file with sequences for the proteins in list 2
-2. Path to HHblits
-3. Output directory
-4. pDockQ threshold. This determines what structures are saved to disk. (0.5 is recommended)
+2. A fasta file with sequences for the proteins in list 2
+3. Path to HHblits
+4. Output directory
+5. pDockQ threshold. This determines what structures are saved to disk. (0.5 is recommended)
 
 \
 \
 Try the test case:
 ```
-bash create_ppi_some_vs_some.sh ./data/dev/test1.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits ./data/dev/some_vs_some/ 0.5
+bash create_ppi_some_vs_some.sh ./data/dev/test1.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits 0.5 ./data/dev/some_vs_some/
 ```
 
 # Note
