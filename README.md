@@ -57,7 +57,7 @@ python3 ./src/test_gpu_avail.py
 ```
 If the output is "gpu" - everything is fine.
 
-*HHblits*
+### HHblits
 \
 This is installed from source.
 ```
@@ -68,7 +68,7 @@ make -j 4 && make install
 cd ..
 ```
 
-*Uniclust30*
+### Uniclust30
 \
 25 Gb download, 87 Gb extracted
 ```
@@ -78,7 +78,7 @@ mv uniclust30_2018_08_hhsuite.tar.gz data/uniclust30
 tar -zxvf data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz -C data/uniclust30/
 ```
 
-*AlphaFold2 parameters*
+### AlphaFold2 parameters
 ```
 mkdir data/params
 wget https://storage.googleapis.com/alphafold/alphafold_params_2021-07-14.tar
@@ -96,7 +96,8 @@ rm params_*.npz
 
 # Run the pipeline
 
-- All-vs-all mode. Input paths to the following resources (separated by space)
+###  All-vs-all mode. 
+- Input paths to the following resources (separated by space)
 1. A fasta file with sequences for all proteins you want to analyse
 2. Path to HHblits (default: hh-suite/build/bin/hhblits)
 3. Output directory
