@@ -13,8 +13,7 @@ The AlphaFold2 parameters are made available under the terms of the [CC BY 4.0 l
 For an example study, see [Towards a structurally resolved human protein interaction network](https://www.nature.com/articles/s41594-022-00910-8) where 65,484 human protein interactions were evaluated.
 \
 \
-\
-The number of possible pairs grows quadratically with the number of input sequences. \
+*The number of possible pairs grows quadratically with the number of input sequences.* \
 As this number rapidly becomes too large to handle, we apply a number of techniques to speed up the
 network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the **speedup is 42 times** (for a set of 1000 proteins, 499500 pairwise interactions) and the **disk space reduction 4460 times**.
 \
@@ -23,9 +22,12 @@ We provide *two options* for running **SpeedPPI**:
 - Runs all proteins in a fasta file against each other.
 2. *Some-vs-some* mode.
 - Runs all proteins in two different fasta files against each other.
-- The PPI network is built automatically and all structures above a score threshold that you set are
-saved to disk. Follow the instructions below, provide your sequences and relax while your network is being built.
+±
 
+The PPI network is built automatically and all structures above a score threshold that you set are
+saved to disk. Follow the instructions below, provide your sequences and relax while your network is being built.
+\
+If you like SpeedPPI, please star this repo and if you use it in your research please cit [FoldDock](https://www.nature.com/articles/s41467-022-28865-w) and [SpeedPPI](link)
 
 
 # Install dependencies
