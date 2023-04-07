@@ -24,7 +24,6 @@ We provide *two options* for running **SpeedPPI**:
 - Runs all proteins in a fasta file against each other.
 2. *Some-vs-some* mode.
 - Runs all proteins in two different fasta files against each other.
-\
 
 The PPI network is built automatically and all structures above a score threshold that you set are
 saved to disk. Follow the instructions below, provide your sequences and relax while your network is being built.
