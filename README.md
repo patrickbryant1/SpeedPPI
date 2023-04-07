@@ -14,15 +14,18 @@ For an example study, see [Towards a structurally resolved human protein interac
 \
 \
 \
-The number of possible pairs grows exponentially with the number of input sequences. \
+The number of possible pairs grows quadratically with the number of input sequences. \
 As this number rapidly becomes too large to handle, we apply a number of techniques to speed up the
-network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the **speedup is 11000 times** (for a set of 1000 proteins, 499500 pairwise interactions) and the **disk space reduction 845000 times**.
+network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the **speedup is 42 times** (for a set of 1000 proteins, 499500 pairwise interactions) and the **disk space reduction 4460 times**.
 \
 We provide *two options* for running **SpeedPPI**:
 1. *All-vs-all* mode.
 - Runs all proteins in a fasta file against each other.
 2. *Some-vs-some* mode.
 - Runs all proteins in two different fasta files against each other.
+- The PPI network is built automatically and all structures above a score threshold that you set are
+saved to disk. Follow the instructions below, provide your sequences and relax while your network is being built.
+
 
 
 # Install dependencies
