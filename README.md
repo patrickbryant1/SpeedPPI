@@ -37,7 +37,7 @@ If you like SpeedPPI, please star this repo and if you use it in your research p
 
 *Python packages*
 
-There are two options to install the packages used here. \
+There are two options to install the packages used here.
 
 1. Install all packages to your local environment with python pip.
 This is recommended - if possible.
@@ -48,7 +48,6 @@ bash install_pip_requirements.txt
 ```
 conda env create -f speed_ppi.yml
 ```
-\
 
 Note that the prediction part here runs on GPU. You will therefore have to install all appropriate CUDA drivers for your system. Otherwise the GPU will not be used. \
 The installation scripts do install these drivers, but this can fail in some cases. \
@@ -124,4 +123,4 @@ bash create_ppi_some_vs_some.sh ./data/dev/test1.fasta ./data/dev/test2.fasta hh
 ```
 
 # Note
-If you have a computational cluster available, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi[all_vs_all, some_vs_some].sh are written in individual scripts assuming a SLURM infrastructure in ./src/parallel/. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
+If you have a computational cluster available, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi_[all_vs_all, some_vs_some].sh are written in individual scripts assuming a SLURM infrastructure in ./src/parallel/. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!

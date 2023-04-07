@@ -9,4 +9,4 @@ pip install dm-tree==0.1.6
 pip install immutabledict==2.0.0
 pip install numpy==1.19.5
 pip install scipy==1.7.0
-pip install tensorflow-cpu==2.11.0
+pip install tensorflow-cpu==2.12.0
