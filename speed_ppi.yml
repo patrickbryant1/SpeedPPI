@@ -10,8 +10,8 @@ dependencies:
     - pandas==1.4.4
     - biopython==1.79
     - chex==0.0.7
-    - dm-tree==0.1.6
-    - immutabledict==2.0.0
-    - numpy==1.19.5
-    - scipy==1.7.0
-    - tensorflow-cpu==2.11.0
+    - dm-tree>=0.1.6
+    - immutabledict>=2.0.0
+    - numpy>=1.19.5
+    - scipy>=1.9.0
+    - tensorflow-cpu>=2.12.0
