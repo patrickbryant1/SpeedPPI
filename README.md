@@ -26,9 +26,11 @@ We provide *two options* for running **SpeedPPI**:
 - Runs all proteins in two different fasta files against each other.
 
 The PPI network is built automatically and all structures above a score threshold that you set are
-saved to disk. Follow the instructions below, provide your sequences and relax while your network is being built.
+saved to disk.
 \
-If you like SpeedPPI, please star this repo and if you use it in your research please cit [FoldDock](https://www.nature.com/articles/s41467-022-28865-w) and [SpeedPPI](link)
+Follow the instructions below, provide your sequences and relax while your network is being built.
+\
+If you like SpeedPPI, please star this repo and if you use it in your research please cite [FoldDock](https://www.nature.com/articles/s41467-022-28865-w) and [SpeedPPI](link)
 
 
 # Install dependencies
