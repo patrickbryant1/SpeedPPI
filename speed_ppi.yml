@@ -1,0 +1,17 @@
+name: SpeedPPI
+channels:
+  - defaults
+dependencies:
+  - conda-forge::jaxlib=0.3.24
+  - pip:
+    - jax==0.3.25
+    - ml-collections==0.1.1
+    - dm-haiku==0.0.9
+    - pandas==1.4.4
+    - biopython==1.79
+    - chex==0.0.7
+    - dm-tree==0.1.6
+    - immutabledict==2.0.0
+    - numpy==1.19.5
+    - scipy==1.7.0
+    - tensorflow-cpu==2.11.0

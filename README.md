@@ -29,12 +29,26 @@ We provide *two options* for running **SpeedPPI**:
 
 *Python packages*
 \
-There are two options to install the packages used here:
-1. Install all packages to your local environment with python pip
+There are two options to install the packages used here. \
+
+1. Install all packages to your local environment with python pip.
+This is recommended - if possible.
+```
+bash install_pip_requirements.txt
+```
 2. Install all packages into a conda environment (requires https://docs.conda.io/en/latest/miniconda.html)
+```
+conda env create -f speed_ppi.yml
+```
 \
-Note that the prediction part here runs on GPU. You will therefore have to install all appropriate
-CUDA drivers for your system. Otherwise the GPU will not be used.
+
+Note that the prediction part here runs on GPU. You will therefore have to install all appropriate CUDA drivers for your system. Otherwise the GPU will not be used. \
+The installation scripts do install these drivers, but this can fail in some cases. \
+To check if the gpu is accessed (first activate the conda environment if this was installed: conda activate SpeedPPI), run:
+```
+python3 ./src/test_gpu_avail.py
+```
+If the output is "gpu" - everything is fine.
 
 *HHblits*
 \
