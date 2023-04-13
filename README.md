@@ -17,7 +17,7 @@ For an example study, see [Towards a structurally resolved human protein interac
 \
 *The number of possible pairs grows quadratically with the number of input sequences.* \
 As this number rapidly becomes too large to handle, we apply a number of techniques to speed up the
-network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the **speedup is 42 times** (for a set of 1000 proteins, 499500 pairwise interactions) and the **disk space reduction 4460 times**.
+network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the **speedup is 42 times** (for a set of 1000 proteins, 499500 pairwise interactions) and the **disk space is reduced 4460 times**.
 \
 We provide *two options* for running **SpeedPPI**:
 1. *All-vs-all* mode.
@@ -125,4 +125,4 @@ bash create_ppi_some_vs_some.sh ./data/dev/test1.fasta ./data/dev/test2.fasta hh
 ```
 
 # Note
-If you have a ***computational cluster available***, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi_[all_vs_all, some_vs_some].sh are written in individual scripts assuming a SLURM infrastructure in ./src/parallel/. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
+If you have a ***computational cluster available***, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2 and 3 in create_ppi_[all_vs_all, some_vs_some].sh are ***written in individual scripts assuming a SLURM infrastructure in ./src/parallel/***. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
