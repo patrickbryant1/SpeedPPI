@@ -258,6 +258,7 @@ def main(num_ensemble,
     # Load an input example - on CPU
     batch = next(pred_data_gen)
     feature_dict = batch[0]
+    pdb.set_trace()
     #Check if this is already predicted
     if feature_dict['ID'] in metrics['ID']:
       print('Prediction already exists for', feature_dict['ID'],'...')

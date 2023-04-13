@@ -3,7 +3,7 @@
 #ARGS
 #INPUT
 FASTA_SEQS1=$1 #All fasta seqs from list 1
-FASTA_SEQS2=$2 #All fasta seqs from list 1
+FASTA_SEQS2=$2 #All fasta seqs from list 2
 HHBLITS=$3 #Path to HHblits
 PDOCKQ_T=$4
 OUTDIR=$5
@@ -89,7 +89,7 @@ do
   mkdir $OUTDIR'/pred'$c'/'
   echo Running pred $c out of $NUM_PREDS
   python3 ./src/run_alphafold_some_vs_some.py --protein_csv1 $PR_CSV1 \
-  --protein_csv1 $PR_CSV2 \
+  --protein_csv2 $PR_CSV2 \
     --target_row $c \
     --msa_dir $MSADIR \
     --data_dir $DATADIR \
