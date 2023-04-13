@@ -11,7 +11,7 @@
 #Load the necessary modules (e.g. python)
 
 #This checks if an offset is provided - useful if more than
-#the max amount of allowed jobs is used
+#the max amount of allowed jobs is used (0 if not provided)
 if [ -z $1 ]
 then
         offset=0
@@ -24,7 +24,20 @@ IDS="path to ids"
 ID=$(sed -n $LN'p' $IDS)
 echo $ID
 #Fasta with sequences to use for the PPI network
-FASTADIR="path to fasta seqs"
+OUTDIR="path to output"
+MSADIR=$OUTDIR/msas/
+mkdir $MSADIR
+FASTADIR="path to individual fasta seqs created in step 1"
 FASTA=$FASTADIR/$ID'.fasta'
+HHBLITS="path to HHblits"
+UNICLUST="path to Uniclust30, ../../data/uniclust30/uniclust30_2018_08 according to setup"
 
-#Annotate the domains
+
+# Run HHblits to create MSA
+echo $ID
+if [ -f "$MSADIR/$ID.a3m" ]; then
+  echo $MSADIR/$ID.a3m exists
+else
+  echo Creating MSA for $ID
+  $HHBLITS -i $FASTA -d $UNICLUST -E 0.001 -all -oa3m $MSADIR/$ID'.a3m'
+fi
