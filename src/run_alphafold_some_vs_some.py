@@ -237,7 +237,7 @@ def main(num_ensemble,
   l1 = len(target_seq)
   chain_break=len(target_seq)
   #Get the remaining rows - only use the subsequent rows (upper-triangular)
-  remaining_rows = np.arange(len(protein_csv))[target_row+1:]
+  remaining_rows = np.arange(len(protein_csv2))
   #Check the previous preds
   if os.path.exists(output_dir+target_id+'_metrics.csv'):
       metric_df = pd.read_csv(output_dir+target_id+'_metrics.csv')
@@ -250,7 +250,7 @@ def main(num_ensemble,
 
   #Data loader
   #This prefetches single examples.
-  pred_ds = Dataset(protein_csv, target_seq, target_id, remaining_rows, msa_dir)
+  pred_ds = Dataset(protein_csv2, target_seq, target_id, remaining_rows, msa_dir)
   pred_data_gen = DataLoader(pred_ds, batch_size=1, num_workers=num_cpus)
 
   #Merge fasta and predict the structure for each of the sequences.
