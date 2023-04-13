@@ -17,7 +17,7 @@ if [ -f "$FASTADIR/id_seqs.csv" ]; then
   echo Fastas exist...
   echo "Remove the directory $FASTADIR if you want to write new fastas."
 else
-mkdir $FASTADIR
+mkdir -p $FASTADIR
 python3 ./src/preprocess_fasta.py --fasta_file $FASTA_SEQS \
 --outdir $FASTADIR
 echo "Writing fastas of each sequence to $FASTADIR"
