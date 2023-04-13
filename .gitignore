@@ -5,4 +5,6 @@ src/alphafold/data/tools/__pycache__
 src/alphafold/model/__pycache__
 src/alphafold/model/tf/__pycache__
 data/params
+data/dev/some_vs_some
+data/dev/all_vs_all
 src/domain_mapping/trn-_cnn_random__random_sp_gpu-cnn_for_random_pfam-5356760
