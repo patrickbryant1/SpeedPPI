@@ -125,4 +125,4 @@ bash create_ppi_some_vs_some.sh ./data/dev/test1.fasta ./data/dev/test2.fasta hh
 ```
 
 # Note
-If you have a ***computational cluster available***, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi_[all_vs_all, some_vs_some].sh are written in individual scripts assuming a SLURM infrastructure in ./src/parallel/. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
+If you have a ***computational cluster available***, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2-4 in create_ppi_[all_vs_all, some_vs_some].sh are ***written in individual scripts assuming a SLURM infrastructure in ./src/parallel/***. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
