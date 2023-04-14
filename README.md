@@ -12,7 +12,7 @@ The AlphaFold2 parameters are made available under the terms of the [CC BY 4.0 l
 \
 **You may not use these files except in compliance with the licenses.**
 \
-For an example study, see [Towards a structurally resolved human protein interaction network](https://www.nature.com/articles/s41594-022-00910-8) where 65,484 human protein interactions were evaluated.
+For an example study, see [Towards a structurally resolved human protein interaction network](https://www.nature.com/articles/s41594-022-00910-8) where 65'484 human protein interactions were evaluated.
 \
 \
 *The number of possible pairs grows quadratically with the number of input sequences.* \
