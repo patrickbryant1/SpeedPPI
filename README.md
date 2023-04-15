@@ -19,6 +19,7 @@ For an example study, see [Towards a structurally resolved human protein interac
 As this number rapidly becomes too large to handle, we apply a number of techniques to speed up the
 network generation. We also greatly reduce the memory footprint of the dependencies for the protein structure prediction and generated MSAs. Overall, the **speedup is 40x** (for a set of 1000 proteins, 499500 pairwise interactions) and the **disk space is reduced 4000x**. The benefits are larger the more proteins are being predicted.
 \
+\
 We provide *two options* for running **SpeedPPI**:
 1. *All-vs-all* mode.
 - Runs all proteins in a fasta file against each other.
