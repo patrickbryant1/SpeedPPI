@@ -31,7 +31,7 @@ saved to disk.
 \
 Follow the instructions below, provide your sequences and relax while your network is being built.
 \
-If you like SpeedPPI, please star this repo and if you use it in your research please cite [FoldDock](https://www.nature.com/articles/s41467-022-28865-w) and [SpeedPPI](link)
+If you like SpeedPPI, please star this repo and if you use it in your research please cite [FoldDock](https://www.nature.com/articles/s41467-022-28865-w) and [SpeedPPI](https://www.biorxiv.org/content/10.1101/2023.04.15.536993v1)
 
 
 # Install dependencies
