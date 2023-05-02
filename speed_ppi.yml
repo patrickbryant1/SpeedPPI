@@ -2,6 +2,7 @@ name: SpeedPPI
 channels:
   - defaults
 dependencies:
+  - python =3.9
   - conda-forge::jaxlib=0.3.24
   - pip:
     - jax==0.3.25
