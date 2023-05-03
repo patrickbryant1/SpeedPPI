@@ -8,7 +8,7 @@ HHBLITS=$3 #Path to HHblits
 PDOCKQ_T=$4
 OUTDIR=$5
 #DEFAULT
-UNICLUST=./data/uniclust30/uniclust30_2018_08 #Assume path according to setup
+UNICLUST=./data/uniclust30_2018_08/uniclust30_2018_08 #Assume path according to setup
 
 
 #The pipeline starts here

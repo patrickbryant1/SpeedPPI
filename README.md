@@ -74,9 +74,7 @@ cd ..
 25 Gb download, 87 Gb extracted
 ```
 wget http://wwwuser.gwdg.de/~compbiol/uniclust/2018_08/uniclust30_2018_08_hhsuite.tar.gz --no-check-certificate
-mkdir data/uniclust30
-mv uniclust30_2018_08_hhsuite.tar.gz data/uniclust30
-tar -zxvf data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz -C data/uniclust30/
+tar -zxvf uniclust30_2018_08_hhsuite.tar.gz -C data/
 ```
 
 ### AlphaFold2 parameters
