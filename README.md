@@ -88,7 +88,7 @@ mv params_model_1.npz data/params
 
 *Cleanup - remove unnecessary files*
 ```
-rm data/uniclust30/uniclust30_2018_08_hhsuite.tar.gz
+rm uniclust30_2018_08_hhsuite.tar.gz
 rm data/params/alphafold_params_2021-07-14.tar
 rm params_*.npz
 ```
