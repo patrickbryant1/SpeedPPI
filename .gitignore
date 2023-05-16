@@ -8,3 +8,7 @@ data/params
 data/dev/some_vs_some
 data/dev/all_vs_all
 src/domain_mapping/trn-_cnn_random__random_sp_gpu-cnn_for_random_pfam-5356760
+DS_Store
+data/.DS_Store
+data/dev/.DS_Store
+data/dev/blackbox_cracking/.DS_Store
