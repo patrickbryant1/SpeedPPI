@@ -104,7 +104,7 @@ def load_input_example(msa1, msa2, complex_id):
     feature_dict['residue_index'] = idx_res #This assignment is unnecessary (already made?)
     # Add the id
     feature_dict['ID'] = complex_id
-    return feature_dict
+    return feature_dict, len(msa1[0])
 
 
 #############Run PPI evaluation#############
@@ -211,7 +211,7 @@ def main(num_ensemble,
   #Merge fasta and predict the structure for each of the sequences.
 
   # Load an input example - on CPU
-  feature_dict = load_input_example(msa1, msa2, complex_id)
+  feature_dict, l1 = load_input_example(msa1, msa2, complex_id)
 
   print('Evaluating pair', feature_dict['ID'])
   # Run the model - on GPU
