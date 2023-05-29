@@ -88,22 +88,22 @@ def load_input_example(msa1, msa2):
     #Define the data pipeline
     data_pipeline = foldonly.FoldDataPipeline()
 
-    #Get the sequence from the msa
-    pdb.set_trace()
-
+    #Get the sequences from the msa
+    cat_sequence = msa1[0]+msa2[0]
+    
     #Get features
     feature_dict = data_pipeline.process(
-          input_sequence=self.target_seq+seq_i,
-          input_description=self.target_id+'_'+id_i,
+          input_sequence=cat_sequence,
+          input_description='pred_1',
           input_msas=[paired_msa,blocked_msa],
           template_search=None)
 
     # Introduce chain breaks for oligomers
     idx_res = feature_dict['residue_index']
-    idx_res[len(self.target_seq):] += 200
+    idx_res[len(msa1[0]):] += 200
     feature_dict['residue_index'] = idx_res #This assignment is unnecessary (already made?)
     # Add the id
-    feature_dict['ID'] = self.target_id+'-'+id_i
+    feature_dict['ID'] = 'pred1'
     return feature_dict
 
 
