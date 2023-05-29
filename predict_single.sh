@@ -34,8 +34,8 @@ do
 done
 
 #Predict a single example
-ID1=$(basename $FASTA1)
-ID2=$(basename $FASTA2)
+ID1=$(basename $FASTA1|cut -d '.' -f 1)
+ID2=$(basename $FASTA2|cut -d '.' -f 1)
 MSA1=$MSADIR/$ID1'.a3m'
 MSA2=$MSADIR/$ID2'.a3m'
 DATADIR=./data/
