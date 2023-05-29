@@ -43,7 +43,7 @@ RECYCLES=10
 NUM_CPUS=1
 
 echo Predicting...
-python3 ./src/run_alphafold_some_vs_some.py --complex_id $COMPLEX_ID \
+python3 ./src/run_alphafold_single.py --complex_id $COMPLEX_ID \
 --msa1 $MSA1 \
 --msa2 $MSA2 \
 --data_dir $DATADIR \
