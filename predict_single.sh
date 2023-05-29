@@ -1,5 +1,6 @@
 #Run a single PPI prediction
 
+# bash predict_single.sh ./data/dev/4G4S_O.fasta ./data/dev/4G4S_P.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits 0.5 ./data/dev/single/
 #ARGS
 #INPUT
 FASTA1=$1 #Fasta sequence 1
@@ -16,7 +17,7 @@ if [ -d "$MSADIR" ]; then
   echo MSAs exists...
   echo Checking if all are present
 else
-  mkdir $MSADIR
+  mkdir -p $MSADIR
 fi
 #Create MSAs
 for FASTA in $FASTA1 $FASTA2
