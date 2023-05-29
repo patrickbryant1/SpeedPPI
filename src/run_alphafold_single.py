@@ -53,7 +53,6 @@ parser.add_argument('--msa1', nargs=1, type= str, default=sys.stdin, help = 'Pat
 parser.add_argument('--msa2', nargs=1, type= str, default=sys.stdin, help = 'Path to dir with single chain MSAs.')
 parser.add_argument('--data_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to directory of supporting data (params).')
 parser.add_argument('--max_recycles', nargs=1, type= int, default=10, help = 'Number of recyles through the model.')
-parser.add_argument('--pdockq_t', nargs=1, type= float, default=0.5, help = 'pDockQ threshold for saving structures. Default = 0.5')
 parser.add_argument('--output_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to a directory that will store the results.')
 
 
@@ -182,12 +181,7 @@ def main(num_ensemble,
         data_dir,
         msa1,
         msa2,
-        output_dir,
-        protein_csv1,
-        protein_csv2,
-        target_row,
-        num_cpus,
-        pdockq_t):
+        output_dir):
 
   """Predict the structure of all possible interacting pairs to the protein in the target row.
   """
@@ -243,10 +237,8 @@ def main(num_ensemble,
   pdb_info, CB_coords = protein.to_pdb(unrelaxed_protein)
   #Score - calculate the pDockQ (number of interface residues and average interface plDDT)
   pdockq, avg_if_plddt, n_if_contacts = score_PPI(CB_coords, plddt, l1)
-  #Save if pDockQ>t
-  if pdockq > pdockq_t:
-    output_name = output_dir+feature_dict['ID']+'.pdb'
-    save_design(pdb_info, output_name, l1)
+  output_name = output_dir+feature_dict['ID']+'.pdb'
+  save_design(pdb_info, output_name, l1)
   #Add to df
   metrics['ID'].append(feature_dict['ID'])
   metrics['num_contacts'].append(n_if_contacts)
@@ -267,8 +259,4 @@ main(num_ensemble=1,
     data_dir=args.data_dir[0],
     msa1=args.msa1[0],
     msa2=args.msa2[0],
-    output_dir=args.output_dir[0],
-    protein_csv1=protein_csv1,
-    protein_csv2=protein_csv2,
-    target_row=args.target_row[0]-1,
-    pdockq_t=args.pdockq_t[0])
+    output_dir=args.output_dir[0])

@@ -1,12 +1,11 @@
 #Run a single PPI prediction
 
-# bash predict_single.sh ./data/dev/4G4S_O.fasta ./data/dev/4G4S_P.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits 0 ./data/dev/single/
+# bash predict_single.sh ./data/dev/4G4S_O.fasta ./data/dev/4G4S_P.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits ./data/dev/single/
 #ARGS
 #INPUT
 FASTA1=$1 #Fasta sequence 1
 FASTA2=$2 #Fasta sequence 2
 HHBLITS=$3 #Path to HHblits
-PDOCKQ_T=$4
 OUTDIR=$5
 #DEFAULT
 UNICLUST=./data/uniclust30_2018_08/uniclust30_2018_08 #Assume path according to setup
@@ -34,8 +33,8 @@ do
 done
 
 #Predict a single example
-ID1=$(basename $FASTA1)
-ID2=$(basename $FASTA2)
+ID1=$(basename $FASTA1|cut -d '.' -f 1)
+ID2=$(basename $FASTA2|cut -d '.' -f 1)
 MSA1=$MSADIR/$ID1'.a3m'
 MSA2=$MSADIR/$ID2'.a3m'
 DATADIR=./data/
@@ -43,12 +42,8 @@ RECYCLES=10
 NUM_CPUS=1
 
 echo Predicting...
-python3 ./src/run_alphafold_some_vs_some.py --protein_csv1 $PR_CSV1 \
---protein_csv2 $PR_CSV2 \
---target_row $c \
---msa_dir $MSADIR \
+python3 ./src/run_alphafold_some_vs_some.py --msa1 $MSA1 \
+--msa2 $MSA2 \
 --data_dir $DATADIR \
 --max_recycles $RECYCLES \
---pdockq_t $PDOCKQ_T \
---num_cpus $NUM_CPUS \
---output_dir $OUTDIR'/pred'$c'/'
+--output_dir $OUTDIR
