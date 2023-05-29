@@ -35,6 +35,7 @@ done
 #Predict a single example
 ID1=$(basename $FASTA1|cut -d '.' -f 1)
 ID2=$(basename $FASTA2|cut -d '.' -f 1)
+COMPLEX_ID=$ID1'-'$ID2
 MSA1=$MSADIR/$ID1'.a3m'
 MSA2=$MSADIR/$ID2'.a3m'
 DATADIR=./data/
@@ -42,7 +43,8 @@ RECYCLES=10
 NUM_CPUS=1
 
 echo Predicting...
-python3 ./src/run_alphafold_some_vs_some.py --msa1 $MSA1 \
+python3 ./src/run_alphafold_some_vs_some.py --complex_id $COMPLEX_ID \
+--msa1 $MSA1 \
 --msa2 $MSA2 \
 --data_dir $DATADIR \
 --max_recycles $RECYCLES \

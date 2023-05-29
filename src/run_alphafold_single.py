@@ -48,7 +48,7 @@ import pdb
 
 
 parser = argparse.ArgumentParser(description = '''Predict a set of putative PPIs given two lists of single chain protein sequences.''')
-
+parser.add_argument('--complex_id', nargs=1, type= str, default=sys.stdin, help = 'ID of complex.')
 parser.add_argument('--msa1', nargs=1, type= str, default=sys.stdin, help = 'Path to dir with single chain MSAs.')
 parser.add_argument('--msa2', nargs=1, type= str, default=sys.stdin, help = 'Path to dir with single chain MSAs.')
 parser.add_argument('--data_dir', nargs=1, type= str, default=sys.stdin, help = 'Path to directory of supporting data (params).')
@@ -59,7 +59,7 @@ parser.add_argument('--output_dir', nargs=1, type= str, default=sys.stdin, help 
 #######################FUNCTIONS#######################
 
 ##########INPUT DATA#########
-def load_input_example(msa1, msa2):
+def load_input_example(msa1, msa2, complex_id):
     """Load for a single example
     """
 
@@ -90,11 +90,11 @@ def load_input_example(msa1, msa2):
 
     #Get the sequences from the msa
     cat_sequence = msa1[0]+msa2[0]
-    
+
     #Get features
     feature_dict = data_pipeline.process(
           input_sequence=cat_sequence,
-          input_description='pred_1',
+          input_description=complex_id,
           input_msas=[paired_msa,blocked_msa],
           template_search=None)
 
@@ -103,7 +103,7 @@ def load_input_example(msa1, msa2):
     idx_res[len(msa1[0]):] += 200
     feature_dict['residue_index'] = idx_res #This assignment is unnecessary (already made?)
     # Add the id
-    feature_dict['ID'] = 'pred1'
+    feature_dict['ID'] = complex_id
     return feature_dict
 
 
@@ -177,6 +177,7 @@ def save_design(pdb_info, output_name, l1):
                 f.write(line+'\n')
 
 def main(num_ensemble,
+        complex_id,
         max_recycles,
         data_dir,
         msa1,
@@ -210,7 +211,7 @@ def main(num_ensemble,
   #Merge fasta and predict the structure for each of the sequences.
 
   # Load an input example - on CPU
-  feature_dict = load_input_example(msa1, msa2)
+  feature_dict = load_input_example(msa1, msa2, complex_id)
 
   print('Evaluating pair', feature_dict['ID'])
   # Run the model - on GPU
@@ -255,6 +256,7 @@ def main(num_ensemble,
 args = parser.parse_args()
 
 main(num_ensemble=1,
+    complex_id=args.complex_id[0],
     max_recycles=args.max_recycles[0],
     data_dir=args.data_dir[0],
     msa1=args.msa1[0],
