@@ -247,7 +247,7 @@ def main(num_ensemble,
   metrics['pdockq'].append(pdockq)
   #Save df
   metric_df = pd.DataFrame.from_dict(metrics)
-  metric_df.to_csv(output_dir+target_id+'_metrics.csv', index=None)
+  metric_df.to_csv(output_dir+complex_id+'_metrics.csv', index=None)
   print(feature_dict['ID'], pdockq)
 
 
