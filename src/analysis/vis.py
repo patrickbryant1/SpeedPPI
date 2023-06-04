@@ -68,7 +68,7 @@ plt.savefig(outdir+'acc_vs_pdockqs.png', format='png', dpi=300)
 plt.close()
 
 #Plot the comparison methods
-accuracies = [0.50, 0.50, 0.51, 0.51, 0.52, 0.63]
+accuracies = [0.50, 0.50, 0.51, 0.51, 0.52, max(acc)]
 labels = [ 'Richoux-LSTM', 'DeepFE', 'Richoux-FC', 'SPRINT', 'PIPR', 'FoldDock']
 fig, ax = plt.subplots(figsize=(9/2.54, 9/2.54))
 plt.scatter(range(len(accuracies)), accuracies)
