@@ -20,10 +20,10 @@ y_true = np.zeros(len(pos_scores)+len(neg_scores))
 y_true[:len(pos_scores)]=1
 probas_pred = np.concatenate([pos_scores[3], neg_scores[3]])
 precision, recall, thresholds = precision_recall_curve(y_true, probas_pred)
-AUC = metrics.auc(recall, precision)
-print('PR AUC:', AUC)
+PR_AUC = metrics.auc(recall, precision)
+print('PR AUC:', PR_AUC)
 fig, ax = plt.subplots(figsize=(9/2.54, 9/2.54))
-plt.plot(recall, precision, label='AUC:'+str(np.round(AUC,3)))
+plt.plot(recall, precision, label='AUC:'+str(np.round(PR_AUC,3)))
 plt.legend()
 plt.xlabel('Recall')
 plt.ylabel('Precision')
@@ -50,7 +50,7 @@ plt.close()
 
 #y pred
 x, acc = [], []
-for t in np.arange(0,1,0.01):
+for t in np.arange(0,max(probas_pred),0.1):
     y_pred = np.zeros(len(pos_scores)+len(neg_scores))
     y_pred[probas_pred>=t]=1
     #print('Accuracy:',t, metrics.accuracy_score(y_true, y_pred))
@@ -68,18 +68,35 @@ plt.savefig(outdir+'acc_vs_pdockqs.png', format='png', dpi=300)
 plt.close()
 
 #Plot the comparison methods
+#Accuracy
 accuracies = [0.50, 0.50, 0.51, 0.51, 0.52, max(acc)]
-labels = [ 'Richoux-LSTM', 'DeepFE', 'Richoux-FC', 'SPRINT', 'PIPR', 'FoldDock']
+labels = [ 'Richoux-LSTM', 'DeepFE', 'Richoux-FC', 'SPRINT', 'PIPR', 'AlphaFold']
 fig, ax = plt.subplots(figsize=(9/2.54, 9/2.54))
 plt.scatter(range(len(accuracies)), accuracies)
 plt.xticks(ticks=range(len(accuracies)), labels=labels, rotation=45)
 plt.axhline(y=0.5, xmin=0, xmax=5, linestyle='--', color='grey', label='random')
 plt.ylabel('Accuracy')
 plt.title('Accuracies')
-plt.ylim([0.48,1])
 plt.legend()
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 plt.tight_layout()
 plt.savefig(outdir+'accuracies.png', format='png', dpi=300)
+plt.close()
+print('Accuracy:', max(acc))
+
+#PR AUC
+PR_AUCs = [0.50, 0.50, 0.51, 0.51, 0.52, PR_AUC]
+labels = [ 'Richoux-LSTM', 'DeepFE', 'Richoux-FC', 'SPRINT', 'PIPR', 'AlphaFold']
+fig, ax = plt.subplots(figsize=(9/2.54, 9/2.54))
+plt.scatter(range(len(PR_AUCs)), PR_AUCs)
+plt.xticks(ticks=range(len(PR_AUCs)), labels=labels, rotation=45)
+plt.axhline(y=0.5, xmin=0, xmax=5, linestyle='--', color='grey', label='random')
+plt.ylabel('PR AUC')
+plt.title('PR AUCs')
+plt.legend()
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+plt.tight_layout()
+plt.savefig(outdir+'PR_AUCs.png', format='png', dpi=300)
 plt.close()
