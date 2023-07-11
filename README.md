@@ -43,7 +43,7 @@ There are two options to install the packages used here.
 1. Install all packages to your local environment with python pip.
 This is recommended - if possible.
 ```
-bash install_pip_requirements.txt
+bash install_pip_requirements.sh
 ```
 2. Install all packages into a conda environment (requires https://docs.conda.io/en/latest/miniconda.html)
 ```
