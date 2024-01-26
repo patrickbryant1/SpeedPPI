@@ -38,16 +38,12 @@ If you like SpeedPPI, please star this repo and if you use it in your research p
 
 ### Python packages
 
-There are two options to install the packages used here.
-
-1. Install all packages to your local environment with python pip.
-This is recommended - if possible.
-```
-bash install_pip_requirements.sh
-```
-2. Install all packages into a conda environment (requires https://docs.conda.io/en/latest/miniconda.html)
+Install all packages into a conda environment (requires https://docs.conda.io/en/latest/miniconda.html)
 ```
 conda env create -f speed_ppi.yml
+wait
+conda activate speed_ppi
+pip install --upgrade "jax[cuda12_local]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
 
 Note that the prediction part here runs on GPU. You will therefore have to install all appropriate CUDA drivers for your system. Otherwise the GPU will not be used. \
@@ -105,7 +101,8 @@ rm params_*.npz
 \
 Try the test case:
 ```
-bash create_ppi_all_vs_all.sh ./data/dev/test.fasta hh-suite/build/bin/hhblits 0.5 ./data/dev/all_vs_all/
+conda activate speed_ppi
+bash create_ppi_all_vs_all.sh ./data/test/test.fasta ./hh-suite/build/bin/hhblits 0.5 ./data/test/all_vs_all/
 ```
 
 ###  Some-vs-some mode
@@ -120,7 +117,8 @@ bash create_ppi_all_vs_all.sh ./data/dev/test.fasta hh-suite/build/bin/hhblits 0
 \
 Try the test case:
 ```
-bash create_ppi_some_vs_some.sh ./data/dev/test1.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits 0.5 ./data/dev/some_vs_some/
+conda activate speed_ppi
+bash create_ppi_some_vs_some.sh ./data/test/test1.fasta ./data/test/test2.fasta ./hh-suite/build/bin/hhblits 0.5 ./data/test/some_vs_some/
 ```
 
 # Note

@@ -1,12 +1,12 @@
 #Run a single PPI prediction
 
-# bash predict_single.sh ./data/dev/4G4S_O.fasta ./data/dev/4G4S_P.fasta ./data/dev/test2.fasta hh-suite/build/bin/hhblits ./data/dev/single/
+# bash predict_single.sh ./data/dev/4G4S_O.fasta ./data/dev/4G4S_P.fasta hh-suite/build/bin/hhblits ./data/dev/single/
 #ARGS
 #INPUT
 FASTA1=$1 #Fasta sequence 1
 FASTA2=$2 #Fasta sequence 2
 HHBLITS=$3 #Path to HHblits
-OUTDIR=$5
+OUTDIR=$4
 #DEFAULT
 UNICLUST=./data/uniclust30_2018_08/uniclust30_2018_08 #Assume path according to setup
 
