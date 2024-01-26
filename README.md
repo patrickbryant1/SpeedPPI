@@ -48,8 +48,9 @@ pip install --upgrade "jax[cuda12_local]" -f https://storage.googleapis.com/jax-
 
 Note that the prediction part here runs on GPU. You will therefore have to install all appropriate CUDA drivers for your system. Otherwise the GPU will not be used. \
 The installation scripts do install these drivers, but this can fail in some cases. \
-To check if the gpu is accessed (first activate the conda environment if this was installed: conda activate SpeedPPI), run:
+To check if the gpu is accessed do:
 ```
+conda activate speed_ppi
 python3 ./src/test_gpu_avail.py
 ```
 If the output is "gpu" - everything is fine.
