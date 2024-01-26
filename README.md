@@ -121,5 +121,10 @@ conda activate speed_ppi
 bash create_ppi_some_vs_some.sh ./data/test/test1.fasta ./data/test/test2.fasta ./hh-suite/build/bin/hhblits 0.5 ./data/test/some_vs_some/
 ```
 
+### Single mode
+```
+bash predict_single.sh ./data/test/4G4S_O.fasta ./data/test/4G4S_P.fasta ./hh-suite/build/bin/hhblits ./data/test/single/
+```
+
 # Note
 If you have a ***computational cluster available***, it will be much faster to run your predictions in parallel. This requires some knowledge of computational infrastructure, however. Steps 2 and 3 in create_ppi_[all_vs_all, some_vs_some].sh are ***written in individual scripts assuming a SLURM infrastructure in ./src/parallel/***. You can copy these, modify the paths and variables and queue them at your cluster to make the predictions even more efficient!
