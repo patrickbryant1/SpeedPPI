@@ -57,12 +57,12 @@ If the output is "gpu" - everything is fine.
 
 ### HHblits
 \
-This is installed from source.
+The static SSE2 build is fetched.
 ```
-git clone https://github.com/soedinglab/hh-suite.git
-mkdir -p hh-suite/build && cd hh-suite/build
-cmake -DCMAKE_INSTALL_PREFIX=. ..
-make -j 4 && make install
+mkdir hh-suite
+cd hh-suite
+wget https://github.com/soedinglab/hh-suite/releases/download/v3.3.0/hhsuite-3.3.0-SSE2-Linux.tar.gz
+tar xvfz hhsuite-3.3.0-SSE2-Linux.tar.gz
 cd ..
 ```
 
@@ -88,6 +88,7 @@ mv params_model_1.npz data/params
 rm uniclust30_2018_08_hhsuite.tar.gz
 rm data/params/alphafold_params_2021-07-14.tar
 rm params_*.npz
+rm hh-suite/hhsuite*.tar.gz
 ```
 
 # Run the pipeline
@@ -103,7 +104,7 @@ rm params_*.npz
 Try the test case:
 ```
 conda activate speed_ppi
-bash create_ppi_all_vs_all.sh ./data/test/test.fasta ./hh-suite/build/bin/hhblits 0.5 ./data/test/all_vs_all/
+bash create_ppi_all_vs_all.sh ./data/test/test.fasta ./hh-suite/bin/hhblits 0.5 ./data/test/all_vs_all/
 ```
 
 ###  Some-vs-some mode
@@ -119,12 +120,12 @@ bash create_ppi_all_vs_all.sh ./data/test/test.fasta ./hh-suite/build/bin/hhblit
 Try the test case:
 ```
 conda activate speed_ppi
-bash create_ppi_some_vs_some.sh ./data/test/test1.fasta ./data/test/test2.fasta ./hh-suite/build/bin/hhblits 0.5 ./data/test/some_vs_some/
+bash create_ppi_some_vs_some.sh ./data/test/test1.fasta ./data/test/test2.fasta ./hh-suite/bin/hhblits 0.5 ./data/test/some_vs_some/
 ```
 
 ### Single mode
 ```
-bash predict_single.sh ./data/test/4G4S_O.fasta ./data/test/4G4S_P.fasta ./hh-suite/build/bin/hhblits ./data/test/single/
+bash predict_single.sh ./data/test/4G4S_O.fasta ./data/test/4G4S_P.fasta ./hh-suite/bin/hhblits ./data/test/single/
 ```
 
 # Note
