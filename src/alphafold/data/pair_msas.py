@@ -67,16 +67,16 @@ def pair_msas(ox1, ox2, msa1, msa2):
 
     #Get the matches
     matching_ox = np.intersect1d(ox1,ox2)
-    #Get the matching inds - only unique ox so can take directly
-    #MSA1
-    match_inds1 = np.argwhere(np.isin(ox1, matching_ox)).ravel()
-    ox1, msa1 = ox1[match_inds1], msa1[match_inds1]
-    #MSA2
-    match_inds2 = np.argwhere(np.isin(ox2, matching_ox)).ravel()
-    ox2, msa2 = ox2[match_inds2], msa2[match_inds2]
+    #Go through all matching and select the first (top) hit
+    ind1 = [] #Index to select from the individual MSAs
+    ind2 = []
+    for ox in matching_ox:
+        ind1.append(min(np.argwhere(ox1==ox)[:,0]))
+        ind2.append(min(np.argwhere(ox2==ox)[:,0]))
 
-    #Return a concatenated MSA
-    cat_msa = [msa1[i]+msa2[i] for i in range(len(msa1))]
+    #Select from MSAs and merge
+    cat_msa = np.array([x1+x2 for x1,x2 in zip(msa1[ind1],msa2[ind2])])
+
     return cat_msa
 
 def analyse_paired_msa(paired_msa, seqid=0.62):
