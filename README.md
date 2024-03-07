@@ -43,7 +43,8 @@ Install all packages into a conda environment (requires https://docs.conda.io/en
 conda env create -f speed_ppi.yml
 wait
 conda activate speed_ppi
-pip install --upgrade "jax[cuda12_local]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+pip install --upgrade "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+pip install --upgrade dm-haiku
 ```
 
 Note that the prediction part here runs on GPU. You will therefore have to install all appropriate CUDA drivers for your system. Otherwise the GPU will not be used. \
